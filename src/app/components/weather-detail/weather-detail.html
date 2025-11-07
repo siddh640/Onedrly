@@ -1,0 +1,213 @@
+<div class="weather-detail-container" [ngClass]="getBackgroundClass()">
+  @if (weatherData) {
+    <!-- Compact Weather Widget -->
+    <div class="weather-compact" (click)="toggleExpanded()" [class.expanded]="expanded()">
+      <div class="compact-header">
+        <div class="weather-icon-large">{{ weatherData.icon }}</div>
+        <div class="weather-main-info">
+          <div class="temperature-large">{{ weatherData.temperature }}°C</div>
+          <div class="condition-text">{{ weatherData.description || weatherData.condition }}</div>
+          @if (weatherData.city) {
+            <div class="location-info">📍 {{ weatherData.city }}, {{ weatherData.country }}</div>
+          }
+        </div>
+        <div class="expand-indicator">
+          <span>{{ expanded() ? '▼ Click to collapse' : '▶ Click for details' }}</span>
+        </div>
+      </div>
+      
+      <div class="quick-stats">
+        <div class="stat">
+          <span class="stat-icon">💧</span>
+          <span>{{ weatherData.humidity }}%</span>
+        </div>
+        <div class="stat">
+          <span class="stat-icon">💨</span>
+          <span>{{ weatherData.windSpeed }} km/h</span>
+        </div>
+        @if (weatherData.feelsLike) {
+          <div class="stat">
+            <span class="stat-icon">🌡️</span>
+            <span>Feels {{ weatherData.feelsLike }}°C</span>
+          </div>
+        }
+      </div>
+    </div>
+
+    <!-- Expanded Weather Details -->
+    @if (expanded()) {
+      <div class="weather-expanded">
+        <!-- Detailed Current Weather -->
+        <div class="detailed-weather-card">
+          <h3 class="section-title">Current Weather Details</h3>
+          
+          @if (weatherData.timezone !== undefined) {
+            <div class="time-info">
+              <div class="local-time">🕐 Local Time: {{ getLocalTime(weatherData.timezone) }}</div>
+              <div class="local-date">📅 {{ getLocalDate(weatherData.timezone) }}</div>
+            </div>
+          }
+
+          <div class="details-grid">
+            <div class="detail-card">
+              <span class="detail-label">🌡️ Temperature Range</span>
+              <span class="detail-value">{{ weatherData.tempMin }}° - {{ weatherData.tempMax }}°C</span>
+            </div>
+            <div class="detail-card">
+              <span class="detail-label">💧 Humidity</span>
+              <span class="detail-value">{{ weatherData.humidity }}%</span>
+            </div>
+            <div class="detail-card">
+              <span class="detail-label">💨 Wind Speed</span>
+              <span class="detail-value">{{ weatherData.windSpeed }} km/h</span>
+            </div>
+            @if (weatherData.windDirection !== undefined) {
+              <div class="detail-card">
+                <span class="detail-label">🧭 Wind Direction</span>
+                <span class="detail-value">{{ weatherData.windDirection }}°</span>
+              </div>
+            }
+            @if (weatherData.pressure) {
+              <div class="detail-card">
+                <span class="detail-label">🔽 Pressure</span>
+                <span class="detail-value">{{ weatherData.pressure }} hPa</span>
+              </div>
+            }
+            @if (weatherData.visibility) {
+              <div class="detail-card">
+                <span class="detail-label">👁️ Visibility</span>
+                <span class="detail-value">{{ (weatherData.visibility / 1000) | number:'1.1-1' }} km</span>
+              </div>
+            }
+          </div>
+        </div>
+
+        <!-- 5-Day Forecast Toggle -->
+        <div class="forecast-toggle-section">
+          <button (click)="toggleForecast()" class="forecast-toggle-btn">
+            <span *ngIf="!showForecast()">📅 Show 5-Day Forecast</span>
+            <span *ngIf="showForecast()">📅 Hide Forecast</span>
+          </button>
+        </div>
+
+        <!-- 5-Day Forecast Section -->
+        @if (showForecast()) {
+          <div class="forecast-section">
+            <div class="forecast-header">
+              <h3>📅 5-Day Weather Forecast</h3>
+              @if (forecast()) {
+                <div class="rain-prediction">
+                  <div class="rain-indicator" [ngClass]="willItRain() ? 'will-rain' : 'no-rain'">
+                    <span class="rain-icon">{{ willItRain() ? '🌧️' : '☀️' }}</span>
+                    <span class="rain-text">
+                      {{ willItRain() ? 'Rain Expected' : 'No Rain Expected' }}
+                    </span>
+                    <span class="rain-probability">{{ getRainProbability() }}% chance</span>
+                  </div>
+                </div>
+              }
+            </div>
+
+            <!-- Loading State -->
+            @if (forecastLoading()) {
+              <div class="forecast-loading">
+                <div class="loading-spinner">⏳</div>
+                <p>Loading forecast...</p>
+              </div>
+            }
+
+            <!-- Forecast Cards -->
+            @if (forecast() && !forecastLoading()) {
+              <div class="forecast-cards-container">
+                @for (day of getDailyForecasts(); track day.day) {
+                  <div class="forecast-card">
+                    <div class="forecast-day-name">{{ day.day }}</div>
+                    <div class="forecast-weather-icon">{{ day.icon }}</div>
+                    <div class="forecast-condition">{{ day.condition }}</div>
+                    <div class="forecast-temp">
+                      <span class="temp-high">{{ day.high }}°</span>
+                      <span class="temp-separator">/</span>
+                      <span class="temp-low">{{ day.low }}°</span>
+                    </div>
+                    @if (day.humidity) {
+                      <div class="forecast-detail">
+                        <span class="detail-icon">💧</span>
+                        <span>{{ day.humidity }}%</span>
+                      </div>
+                    }
+                    @if (day.windSpeed) {
+                      <div class="forecast-detail">
+                        <span class="detail-icon">💨</span>
+                        <span>{{ day.windSpeed }} km/h</span>
+                      </div>
+                    }
+                  </div>
+                }
+              </div>
+
+              <!-- Detailed Forecast Table (Optional) -->
+              <div class="forecast-table-toggle">
+                <details>
+                  <summary>📊 View Detailed Hourly Forecast</summary>
+                  <div class="forecast-table-container">
+                    @if (weatherData.timezone !== undefined) {
+                      <div class="forecast-location-info">
+                        <h4>📍 {{ weatherData.city }}, {{ weatherData.country }}</h4>
+                        <p class="timezone-info">🌐 Local Time Zone: UTC {{ weatherData.timezone > 0 ? '+' : '' }}{{ weatherData.timezone / 3600 }}h</p>
+                      </div>
+                    }
+                    <table class="forecast-table">
+                      <thead>
+                        <tr>
+                          <th>Date & Time</th>
+                          <th>Weather</th>
+                          <th>Temperature</th>
+                          <th>Humidity</th>
+                          <th>Wind</th>
+                        </tr>
+                      </thead>
+                      <tbody>
+                        @for (item of forecast()!.list.slice(0, 40); track item.dt; let i = $index) {
+                          <tr class="forecast-row" [ngClass]="{'daily-forecast-row': i % 8 === 0}">
+                            <td class="forecast-time-cell">
+                              @if (weatherData.timezone !== undefined) {
+                                <div class="date-time">
+                                  <div class="date">{{ getForecastLocalDate(item.dt, weatherData.timezone) }}</div>
+                                  <div class="time">{{ getForecastLocalTime(item.dt, weatherData.timezone) }}</div>
+                                </div>
+                              }
+                            </td>
+                            <td class="weather-cell">
+                              <div class="weather-info">
+                                <span class="weather-emoji">{{ getWeatherIcon(item.weather[0].main) }}</span>
+                                <span class="weather-desc">{{ item.weather[0].description }}</span>
+                              </div>
+                            </td>
+                            <td class="temp-cell">
+                              <div class="temp-info">
+                                <span class="temp-high">{{ item.main.temp_max | number:'1.0-0' }}°</span>
+                                <span class="temp-separator">/</span>
+                                <span class="temp-low">{{ item.main.temp_min | number:'1.0-0' }}°</span>
+                              </div>
+                            </td>
+                            <td class="humidity-cell">
+                              <span class="detail-value">💧 {{ item.main.humidity }}%</span>
+                            </td>
+                            <td class="wind-cell">
+                              <span class="detail-value">💨 {{ item.wind.speed * 3.6 | number:'1.0-0' }} km/h</span>
+                            </td>
+                          </tr>
+                        }
+                      </tbody>
+                    </table>
+                  </div>
+                </details>
+              </div>
+            }
+          </div>
+        }
+      </div>
+    }
+  }
+</div>
+

@@ -1,0 +1,47 @@
+<div class="profile-container">
+  <div class="profile-card">
+    <div class="profile-header">
+      <button class="back-btn" (click)="goBack()">
+        ← Back to O∩edrly
+      </button>
+      <h1 class="profile-title">My Profile</h1>
+    </div>
+
+    @if (user) {
+    <div class="profile-content">
+      <div class="user-info">
+        <div class="user-avatar">
+          {{ user.name.charAt(0).toUpperCase() }}
+        </div>
+        <div class="user-details">
+          <h2 class="user-name">{{ user.name }}</h2>
+          <p class="user-email">{{ user.email }}</p>
+        </div>
+      </div>
+
+      <div class="profile-stats">
+        <div class="stat-card">
+          <div class="stat-icon">🏛️</div>
+          <div class="stat-info">
+            <h3>{{ user.preferences.favoriteDestinations.length }}</h3>
+            <p>Favorite Destinations</p>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">⭐</div>
+          <div class="stat-info">
+            <h3>{{ user.preferences.preferredCategories.length }}</h3>
+            <p>Preferred Categories</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="profile-actions">
+        <button class="logout-btn" (click)="logout()">
+          Sign Out
+        </button>
+      </div>
+    </div>
+    }
+  </div>
+</div>

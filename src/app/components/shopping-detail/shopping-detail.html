@@ -1,0 +1,77 @@
+<div class="detail-container">
+  <div class="detail-header">
+    <button class="back-btn" (click)="goBack()">
+      ← Back to Results
+    </button>
+    <h1 class="detail-title">🛍️ Shopping & Malls in {{ destination }}</h1>
+    <p class="detail-subtitle">{{ getTopShopping().length }} amazing places to shop</p>
+    <div class="preference-info">
+      @for (info of getDestinationSpecificInfo(); track info.title) {
+      <div class="info-card">
+        <h3>{{ info.title }}</h3>
+        <p>{{ info.description }}</p>
+      </div>
+      }
+    </div>
+  </div>
+
+  @if (getTopShopping().length > 0) {
+  <div class="places-grid">
+    @for (place of getTopShopping(); track place.name) {
+    <div class="place-card">
+      <div class="place-content">
+        <h3 class="place-name clickable" (click)="toggleDetails(place.name)">{{ place.name }}</h3>
+        @if (isExpanded(place.name)) {
+        <div class="place-details">
+          <p class="place-address">📍 {{ place.formattedAddress || place.vicinity || place.address }}</p>
+          <div class="place-meta">
+            @if (place.rating) {
+            <div class="place-rating">
+              <span class="rating-star">⭐</span>
+              <span class="rating-value">{{ place.rating }}</span>
+              <span class="rating-count">({{ place.userRatingsTotal }})</span>
+            </div>
+            }
+          </div>
+          @if (place.types) {
+          <div class="place-description">
+            <span class="place-type">{{ getPlaceType(place.types[0]) }}</span>
+          </div>
+          }
+          <div class="place-status-line">
+            <span class="place-status-inline" [ngClass]="getStatusClass(place.openNow)">
+              {{ getStatusText(place.openNow) }}
+            </span>
+          </div>
+          @if (place.phone) {
+          <div class="contact-info">
+            <strong>📞 Phone:</strong> {{ place.phone }}
+          </div>
+          }
+          @if (place.website) {
+          <div class="contact-info">
+            <strong>🌐 Website:</strong> <a [href]="place.website" target="_blank" class="website-link">{{ place.website }}</a>
+          </div>
+          }
+          @if (place.openingHours) {
+          <div class="opening-hours">
+            <strong>🕐 Opening Hours:</strong>
+            <pre class="hours-text">{{ place.openingHours }}</pre>
+          </div>
+          }
+        </div>
+        }
+      </div>
+    </div>
+    }
+  </div>
+  }
+
+  @if (shopping.length === 0) {
+  <div class="no-results">
+    <div class="no-results-icon">🛍️</div>
+    <h3>No shopping places found</h3>
+    <p>We couldn't find any shopping destinations for this location.</p>
+  </div>
+  }
+</div>

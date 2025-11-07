@@ -1,0 +1,24 @@
+<div class="attractions-grid">
+  @for (place of places(); track place.name) {
+  <div class="attraction-card">
+    <div class="attraction-image" [style.background-image]="'url(' + place.photos?.[0] + ')'">
+      <span class="attraction-status" [ngClass]="getStatusClass(place.openNow)">
+        {{ getStatusText(place.openNow) }}
+      </span>
+    </div>
+    <div class="attraction-content">
+      <h3 class="attraction-name">{{ place.name }}</h3>
+      <p class="attraction-address">📍 {{ place.address }}</p>
+      <div class="attraction-meta">
+        @if (place.rating) {
+        <div class="attraction-rating">
+          <span class="rating-star">⭐</span>
+          <span class="rating-value">{{ place.rating }}</span>
+          <span class="rating-count">({{ place.userRatingsTotal }})</span>
+        </div>
+        }
+      </div>
+    </div>
+  </div>
+  }
+</div>

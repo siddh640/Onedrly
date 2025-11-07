@@ -1,0 +1,350 @@
+<div class="modal-overlay" *ngIf="isOpen" (click)="close()">
+  <div class="modal-content" (click)="$event.stopPropagation()">
+    <div class="modal-header">
+      <h2 class="modal-title">✈️ Book Your Travel</h2>
+      <button class="close-btn" (click)="close()">&times;</button>
+    </div>
+
+    <!-- Search Form -->
+    <div class="search-section">
+      <div class="search-form">
+        <div class="form-row">
+          <div class="form-group">
+            <label>From</label>
+            <input
+              type="text"
+              [(ngModel)]="origin"
+              placeholder="Enter origin city"
+              class="form-input"
+            />
+          </div>
+          <div class="form-group">
+            <label>To</label>
+            <input
+              type="text"
+              [(ngModel)]="destination"
+              placeholder="Enter destination"
+              class="form-input"
+            />
+          </div>
+        </div>
+
+        <div class="form-row">
+          <div class="form-group">
+            <label for="departureDate">Departure Date</label>
+            <input
+              id="departureDate"
+              type="date"
+              [(ngModel)]="departureDate"
+              title="Select departure date"
+              placeholder="Select date"
+              aria-label="Departure Date"
+              class="form-input"
+            />
+          </div>
+          <div class="form-group">
+            <label for="returnDate">Return Date (Optional)</label>
+            <input
+              id="returnDate"
+              type="date"
+              [(ngModel)]="returnDate"
+              title="Select return date (optional)"
+              placeholder="Select return date"
+              aria-label="Return Date (Optional)"
+              class="form-input"
+            />
+          </div>
+          <div class="form-group">
+            <label for="passengers">Passengers</label>
+            <input
+              id="passengers"
+              type="number"
+              [(ngModel)]="passengers"
+              min="1"
+              max="10"
+              title="Number of passengers (1-10)"
+              placeholder="1"
+              aria-label="Number of Passengers"
+              class="form-input"
+            />
+          </div>
+        </div>
+
+        <button
+          (click)="searchTravel()"
+          [disabled]="loading()"
+          class="search-btn"
+        >
+          <span *ngIf="!loading()">🔍 Search Travel Options</span>
+          <span *ngIf="loading()">⏳ Searching...</span>
+        </button>
+      </div>
+    </div>
+
+    <!-- Results Section -->
+    <div *ngIf="showResults()" class="results-section">
+      <!-- Tabs -->
+      <div class="tabs">
+        <button
+          class="tab"
+          [class.active]="selectedTab() === 'flights'"
+          (click)="selectTab('flights')"
+        >
+          ✈️ Flights ({{ searchResults()?.flights?.length || 0 }})
+        </button>
+        <button
+          class="tab"
+          [class.active]="selectedTab() === 'trains'"
+          (click)="selectTab('trains')"
+        >
+          🚂 Trains ({{ searchResults()?.trains?.length || 0 }})
+        </button>
+        <button
+          class="tab"
+          [class.active]="selectedTab() === 'buses'"
+          (click)="selectTab('buses')"
+        >
+          🚌 Buses ({{ searchResults()?.buses?.length || 0 }})
+        </button>
+        <button
+          class="tab"
+          [class.active]="selectedTab() === 'hotels'"
+          (click)="selectTab('hotels')"
+        >
+          🏨 Hotels ({{ searchResults()?.hotels?.length || 0 }})
+        </button>
+        <button
+          class="tab"
+          [class.active]="selectedTab() === 'rides'"
+          (click)="selectTab('rides')"
+        >
+          🚗 Rides ({{ searchResults()?.rideEstimates?.length || 0 }})
+        </button>
+      </div>
+
+      <!-- Flight Results -->
+      <div *ngIf="selectedTab() === 'flights'" class="results-list">
+        <div *ngFor="let flight of searchResults()?.flights" class="result-card">
+          <div class="result-header">
+            <div class="result-icon">✈️</div>
+            <div class="result-info">
+              <h3 class="result-title">{{ flight.airline }}</h3>
+              <p class="result-subtitle">{{ flight.flightNumber }}</p>
+            </div>
+            <div class="result-price">
+              <span class="price">{{ formatPrice(flight.price, flight.currency) }}</span>
+              <span class="per-person">per person</span>
+            </div>
+          </div>
+          <div class="result-details">
+            <div class="detail-item">
+              <span class="detail-label">Route:</span>
+              <span class="detail-value">{{ flight.origin }} → {{ flight.destination }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Departure:</span>
+              <span class="detail-value">{{ formatDate(flight.departureTime) }} {{ formatTime(flight.departureTime) }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Arrival:</span>
+              <span class="detail-value">{{ formatDate(flight.arrivalTime) }} {{ formatTime(flight.arrivalTime) }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Duration:</span>
+              <span class="detail-value">{{ flight.duration }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Stops:</span>
+              <span class="detail-value">{{ flight.stops === 0 ? 'Direct' : flight.stops + ' stop(s)' }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Class:</span>
+              <span class="detail-value">{{ flight.cabinClass }}</span>
+            </div>
+          </div>
+          <button (click)="bookItem(flight, 'flight')" class="book-btn">
+            Book Now
+          </button>
+        </div>
+      </div>
+
+      <!-- Train Results -->
+      <div *ngIf="selectedTab() === 'trains'" class="results-list">
+        <div *ngFor="let train of searchResults()?.trains" class="result-card">
+          <div class="result-header">
+            <div class="result-icon">🚂</div>
+            <div class="result-info">
+              <h3 class="result-title">{{ train.trainName }}</h3>
+              <p class="result-subtitle">{{ train.trainNumber }}</p>
+            </div>
+            <div class="result-price">
+              <span class="price">{{ formatPrice(train.price, train.currency) }}</span>
+              <span class="per-person">per person</span>
+            </div>
+          </div>
+          <div class="result-details">
+            <div class="detail-item">
+              <span class="detail-label">Route:</span>
+              <span class="detail-value">{{ train.origin }} → {{ train.destination }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Departure:</span>
+              <span class="detail-value">{{ formatDate(train.departureTime) }} {{ formatTime(train.departureTime) }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Arrival:</span>
+              <span class="detail-value">{{ formatDate(train.arrivalTime) }} {{ formatTime(train.arrivalTime) }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Duration:</span>
+              <span class="detail-value">{{ train.duration }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Class:</span>
+              <span class="detail-value">{{ train.class }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Seats Available:</span>
+              <span class="detail-value">{{ train.seatsAvailable }}</span>
+            </div>
+          </div>
+          <button (click)="bookItem(train, 'train')" class="book-btn">
+            Book Now
+          </button>
+        </div>
+      </div>
+
+      <!-- Bus Results -->
+      <div *ngIf="selectedTab() === 'buses'" class="results-list">
+        <div *ngFor="let bus of searchResults()?.buses" class="result-card">
+          <div class="result-header">
+            <div class="result-icon">🚌</div>
+            <div class="result-info">
+              <h3 class="result-title">{{ bus.operator }}</h3>
+              <p class="result-subtitle">{{ bus.busType }}</p>
+            </div>
+            <div class="result-price">
+              <span class="price">{{ formatPrice(bus.price, bus.currency) }}</span>
+              <span class="per-person">per person</span>
+            </div>
+          </div>
+          <div class="result-details">
+            <div class="detail-item">
+              <span class="detail-label">Route:</span>
+              <span class="detail-value">{{ bus.origin }} → {{ bus.destination }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Departure:</span>
+              <span class="detail-value">{{ formatDate(bus.departureTime) }} {{ formatTime(bus.departureTime) }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Arrival:</span>
+              <span class="detail-value">{{ formatDate(bus.arrivalTime) }} {{ formatTime(bus.arrivalTime) }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Duration:</span>
+              <span class="detail-value">{{ bus.duration }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Seats Available:</span>
+              <span class="detail-value">{{ bus.seatsAvailable }}</span>
+            </div>
+            <div class="detail-item amenities-item">
+              <span class="detail-label">Amenities:</span>
+              <div class="amenities-list">
+                <span *ngFor="let amenity of bus.amenities" class="amenity-tag">{{ amenity }}</span>
+              </div>
+            </div>
+          </div>
+          <button (click)="bookItem(bus, 'bus')" class="book-btn">
+            Book Now
+          </button>
+        </div>
+      </div>
+
+      <!-- Hotel Results -->
+      <div *ngIf="selectedTab() === 'hotels'" class="results-list">
+        <div *ngFor="let hotel of searchResults()?.hotels" class="result-card">
+          <div class="result-header">
+            <div class="result-icon">🏨</div>
+            <div class="result-info">
+              <h3 class="result-title">{{ hotel.name }}</h3>
+              <p class="result-subtitle">
+                <span class="stars">{{ '⭐'.repeat(hotel.starRating) }}</span>
+                <span class="rating">{{ hotel.rating | number:'1.1-1' }}/5.0</span>
+                <span class="reviews">({{ hotel.reviews }} reviews)</span>
+              </p>
+            </div>
+            <div class="result-price">
+              <span class="price">{{ formatPrice(hotel.price, hotel.currency) }}</span>
+              <span class="per-person">per night</span>
+            </div>
+          </div>
+          <div class="result-details">
+            <div class="detail-item">
+              <span class="detail-label">Address:</span>
+              <span class="detail-value">{{ hotel.address }}</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Distance from Center:</span>
+              <span class="detail-value">{{ hotel.distanceFromCenter | number:'1.1-1' }} km</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Room Type:</span>
+              <span class="detail-value">{{ hotel.roomType }}</span>
+            </div>
+            <div class="detail-item amenities-item">
+              <span class="detail-label">Amenities:</span>
+              <div class="amenities-list">
+                <span *ngFor="let amenity of hotel.amenities" class="amenity-tag">{{ amenity }}</span>
+              </div>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Cancellation:</span>
+              <span class="detail-value">{{ hotel.cancellationPolicy }}</span>
+            </div>
+          </div>
+          <button (click)="bookItem(hotel, 'hotel')" class="book-btn">
+            Book Now
+          </button>
+        </div>
+      </div>
+
+      <!-- Ride Estimates -->
+      <div *ngIf="selectedTab() === 'rides'" class="results-list">
+        <div *ngFor="let ride of searchResults()?.rideEstimates" class="result-card">
+          <div class="result-header">
+            <div class="result-icon">🚗</div>
+            <div class="result-info">
+              <h3 class="result-title">{{ ride.displayName }}</h3>
+              <p class="result-subtitle">Estimated arrival: {{ ride.estimate }}</p>
+            </div>
+            <div class="result-price">
+              <span class="price">{{ formatPrice(ride.fareEstimate.minimum, ride.fareEstimate.currency) }} - {{ formatPrice(ride.fareEstimate.maximum, ride.fareEstimate.currency) }}</span>
+              <span class="per-person">estimate</span>
+            </div>
+          </div>
+          <div class="result-details">
+            <div class="detail-item">
+              <span class="detail-label">Duration:</span>
+              <span class="detail-value">~{{ ride.duration }} minutes</span>
+            </div>
+            <div class="detail-item">
+              <span class="detail-label">Distance:</span>
+              <span class="detail-value">~{{ ride.distance | number:'1.1-1' }} km</span>
+            </div>
+          </div>
+          <button (click)="bookItem(ride, 'cab')" class="book-btn">
+            Request Ride
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- No Results -->
+    <div *ngIf="showResults() && getResultsCount() === 0" class="no-results">
+      <p>😔 No {{ selectedTab() }} found for your search. Try different dates or destinations.</p>
+    </div>
+  </div>
+</div>
+

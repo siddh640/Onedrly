@@ -1,0 +1,67 @@
+<div class="auth-container">
+  <div class="auth-card">
+    <div class="auth-header">
+      <button class="back-btn" (click)="goBack()">
+        ← Back to O∩edrly
+      </button>
+      <h1 class="auth-title">Welcome Back!</h1>
+      <p class="auth-subtitle">Sign in to your O∩edrly account</p>
+    </div>
+
+    <form (ngSubmit)="onSubmit()" class="auth-form">
+      <div class="form-group">
+        <label for="email" class="form-label">Email Address</label>
+        <input
+          type="email"
+          id="email"
+          name="email"
+          [(ngModel)]="credentials.email"
+          class="form-input"
+          placeholder="Enter your email"
+          required
+        />
+      </div>
+
+      <div class="form-group">
+        <label for="password" class="form-label">Password</label>
+        <input
+          type="password"
+          id="password"
+          name="password"
+          [(ngModel)]="credentials.password"
+          class="form-input"
+          placeholder="Enter your password"
+          required
+        />
+      </div>
+
+      @if (errorMessage) {
+      <div class="error-message">
+        {{ errorMessage }}
+      </div>
+      }
+
+      <button 
+        type="submit" 
+        class="auth-button"
+        [disabled]="loading"
+        [class.loading]="loading">
+        @if (!loading) {
+        <span>Sign In</span>
+        }
+        @if (loading) {
+        <span>Signing In...</span>
+        }
+      </button>
+    </form>
+
+    <div class="auth-footer">
+      <p class="auth-text">
+        Don't have an account? 
+        <button class="link-button" (click)="goToRegister()">
+          Create Account
+        </button>
+      </p>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,313 @@
+@if (hasData) {
+<div class="results-container">
+  <div class="destination-header">
+    <h1 class="destination-title">{{ destinationData()?.destination }}</h1>
+    <p class="destination-subtitle">Discover amazing places, restaurants, and shopping destinations</p>
+  </div>
+
+  <!-- Enhanced Weather Widget -->
+  @if (weatherData()) {
+    <app-weather-detail 
+      [weatherData]="weatherData()" 
+      [destination]="destinationData()?.destination || ''">
+    </app-weather-detail>
+  }
+
+  <!-- Book Travel Button -->
+  <div class="book-travel-section">
+    <button class="book-travel-btn" (click)="openBookingModal()">
+      <span class="btn-icon">✈️</span>
+      <span class="btn-text">Book Flights, Hotels & More</span>
+      <span class="btn-subtitle">Find the best travel deals to {{ destinationData()?.destination }}</span>
+    </button>
+  </div>
+
+  <!-- Booking Modal -->
+  <app-booking-modal 
+    [isOpen]="showBookingModal()"
+    [destinationName]="destinationData()?.destination || ''"
+    (closeModal)="closeBookingModal()">
+  </app-booking-modal>
+
+  <!-- Three Column Grid Layout -->
+  <div class="three-column-grid">
+    
+    <!-- Column 1: Tourist Attractions -->
+    <div class="grid-column clickable-column" (click)="onColumnClick('attractions')" data-category="attractions">
+      <div class="column-header">
+        <div class="column-icon">🏛️</div>
+        <h2 class="column-title">Tourist Attractions</h2>
+        <p class="column-count">{{ destinationData()?.attractions?.length || 0 }} places</p>
+        <div class="click-hint">👆 Click to explore all attractions</div>
+      </div>
+      <div class="column-preview">
+        <div class="preview-stats">
+          <div class="stat-item">
+            <span class="stat-icon">⭐</span>
+            <span class="stat-text">Top Rated Places</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-icon">📍</span>
+            <span class="stat-text">Must-Visit Locations</span>
+          </div>
+        </div>
+        <div class="preview-highlights">
+          @for (place of getTopPlaces(destinationData()?.attractions || []); track place.name; let i = $index) {
+          <div class="highlight-item" [style.display]="i < 10 ? 'flex' : 'none'">
+            <span class="highlight-name">{{ place.name }}</span>
+            @if (place.rating) {
+            <span class="highlight-rating">⭐ {{ place.rating }}</span>
+            }
+          </div>
+          }
+        </div>
+      </div>
+    </div>
+
+    <!-- Column 2: Restaurants -->
+    <div class="grid-column clickable-column" (click)="onColumnClick('restaurants')" data-category="restaurants">
+      <div class="column-header">
+        <div class="column-icon">🍽️</div>
+        <h2 class="column-title">Restaurants & Dining</h2>
+        <p class="column-count">{{ destinationData()?.restaurants?.length || 0 }} places</p>
+        <div class="click-hint">👆 Click to explore all restaurants</div>
+      </div>
+      <div class="column-preview">
+        <div class="preview-stats">
+          <div class="stat-item">
+            <span class="stat-icon">🍽️</span>
+            <span class="stat-text">Dining Options</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-icon">💰</span>
+            <span class="stat-text">Various Price Ranges</span>
+          </div>
+        </div>
+        <div class="preview-highlights">
+          @for (place of getTopPlaces(destinationData()?.restaurants || []); track place.name; let i = $index) {
+          <div class="highlight-item" [style.display]="i < 10 ? 'flex' : 'none'">
+            <span class="highlight-name">{{ place.name }}</span>
+            @if (place.rating) {
+            <span class="highlight-rating">⭐ {{ place.rating }}</span>
+            }
+          </div>
+          }
+        </div>
+      </div>
+    </div>
+
+    <!-- Column 3: Shopping & Malls -->
+    <div class="grid-column clickable-column" (click)="onColumnClick('shopping')" data-category="shopping">
+      <div class="column-header">
+        <div class="column-icon">🛍️</div>
+        <h2 class="column-title">Shopping & Malls</h2>
+        <p class="column-count">{{ destinationData()?.shopping?.length || 0 }} places</p>
+        <div class="click-hint">👆 Click to explore all shopping</div>
+      </div>
+      <div class="column-preview">
+        <div class="preview-stats">
+          <div class="stat-item">
+            <span class="stat-icon">🛍️</span>
+            <span class="stat-text">Shopping Centers</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-icon">🏪</span>
+            <span class="stat-text">Local Markets</span>
+          </div>
+        </div>
+        <div class="preview-highlights">
+          @for (place of getTopPlaces(destinationData()?.shopping || []); track place.name; let i = $index) {
+          <div class="highlight-item" [style.display]="i < 10 ? 'flex' : 'none'">
+            <span class="highlight-name">{{ place.name }}</span>
+            @if (place.rating) {
+            <span class="highlight-rating">⭐ {{ place.rating }}</span>
+            }
+          </div>
+          }
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- Place Details Modal -->
+  @if (showDetailsModal()) {
+  <div class="details-modal-overlay" (click)="closeDetailsModal()">
+    <div class="details-modal-content" (click)="$event.stopPropagation()">
+      <div class="details-modal-header">
+        <div class="details-header-left">
+          <span class="details-icon">{{ getCategoryIcon(selectedCategory()) }}</span>
+          <h2 class="details-title">{{ getCategoryTitle(selectedCategory()) }}</h2>
+          <span class="details-count">{{ selectedPlaces().length }} places</span>
+        </div>
+        <button class="close-details-btn" (click)="closeDetailsModal()">✕</button>
+      </div>
+      
+      <div class="details-modal-body">
+        <div class="places-grid">
+          @for (place of selectedPlaces(); track place.id) {
+          <div class="place-card">
+            <!-- Photo Gallery -->
+            @if (place.photos && place.photos.length > 0) {
+            <div class="place-photos">
+              <img [src]="place.photos[0]" alt="Place photo" title="Place photo" [attr.alt]="place.name || 'Place photo'" [attr.title]="place.name || 'Place photo'" class="main-photo" loading="lazy">
+              @if (place.photos.length > 1) {
+              <div class="photo-indicators">
+                @for (photo of place.photos; track $index; let i = $index) {
+                  @if (i < 3) {
+                    <span class="photo-dot" [class.active]="i === 0"></span>
+                  }
+                }
+              </div>
+              }
+            </div>
+            }
+            
+            <!-- Place Info -->
+            <div class="place-info">
+              <h3 class="place-name">{{ place.name }}</h3>
+              
+              <!-- Rating & Reviews -->
+              @if (place.rating) {
+              <div class="place-rating-row">
+                <div class="rating-stars">
+                  <span class="star-icon">⭐</span>
+                  <span class="rating-value">{{ place.rating }}</span>
+                </div>
+                @if (place.userRatingsTotal) {
+                <span class="review-count">({{ place.userRatingsTotal }} reviews)</span>
+                }
+                @if (place.priceLevel) {
+                <span class="price-level">{{ getPriceLevelText(place.priceLevel) }}</span>
+                }
+              </div>
+              }
+              
+              <!-- Address -->
+              @if (place.address) {
+              <div class="place-address">
+                <span class="address-icon">📍</span>
+                <span class="address-text">{{ place.address }}</span>
+              </div>
+              }
+              
+              <!-- Description -->
+              @if (place.description) {
+              <div class="place-description">
+                {{ truncateDescription(place.description, 150) }}
+              </div>
+              }
+              
+              <!-- Additional Details -->
+              <div class="place-details-row">
+                @if (place.openNow !== undefined) {
+                <span class="detail-badge" [class.open]="place.openNow" [class.closed]="!place.openNow">
+                  {{ place.openNow ? '✓ Open Now' : '✕ Closed' }}
+                </span>
+                }
+                @if (place.cuisine) {
+                <span class="detail-badge cuisine">🍴 {{ place.cuisine }}</span>
+                }
+                @if (place.types && place.types.length > 0) {
+                <span class="detail-badge type">{{ place.types[0] }}</span>
+                }
+              </div>
+              
+              <!-- Amenities (Google Data) -->
+              @if (place.delivery || place.dineIn || place.takeout || place.wheelchairAccessible || place.reservable) {
+              <div class="place-amenities">
+                <div class="amenities-title">Amenities</div>
+                <div class="amenities-grid">
+                  @if (place.delivery) {
+                    <span class="amenity-badge">🚗 Delivery</span>
+                  }
+                  @if (place.dineIn) {
+                    <span class="amenity-badge">🍽️ Dine-in</span>
+                  }
+                  @if (place.takeout) {
+                    <span class="amenity-badge">🥡 Takeout</span>
+                  }
+                  @if (place.reservable) {
+                    <span class="amenity-badge">📅 Reservations</span>
+                  }
+                  @if (place.wheelchairAccessible) {
+                    <span class="amenity-badge">♿ Accessible</span>
+                  }
+                  @if (place.servesBreakfast) {
+                    <span class="amenity-badge">🌅 Breakfast</span>
+                  }
+                  @if (place.servesLunch) {
+                    <span class="amenity-badge">☀️ Lunch</span>
+                  }
+                  @if (place.servesDinner) {
+                    <span class="amenity-badge">🌙 Dinner</span>
+                  }
+                  @if (place.servesVegetarian) {
+                    <span class="amenity-badge">🥗 Vegetarian</span>
+                  }
+                </div>
+              </div>
+              }
+              
+              <!-- Google Reviews -->
+              @if (place.reviews && place.reviews.length > 0) {
+              <div class="place-reviews">
+                <div class="reviews-title">
+                  <span class="reviews-icon">⭐</span>
+                  Google Reviews
+                </div>
+                <div class="reviews-list">
+                  @for (review of place.reviews.slice(0, 2); track $index) {
+                  <div class="review-card">
+                    <div class="review-header">
+                      <span class="review-author">{{ review.author }}</span>
+                      <span class="review-rating">⭐ {{ review.rating }}/5</span>
+                    </div>
+                    <div class="review-text">{{ review.text }}</div>
+                    <div class="review-time">{{ review.time }}</div>
+                  </div>
+                  }
+                </div>
+              </div>
+              }
+              
+              <!-- Contact Info -->
+              @if (place.phone || place.website || place.googleMapsUrl) {
+              <div class="place-contact">
+                @if (place.phone) {
+                <a [href]="'tel:' + place.phone" class="contact-link">
+                  <span class="contact-icon">📞</span>
+                  {{ place.phone }}
+                </a>
+                }
+                @if (place.website) {
+                <a [href]="place.website" target="_blank" class="contact-link">
+                  <span class="contact-icon">🌐</span>
+                  Visit Website
+                </a>
+                }
+                @if (place.googleMapsUrl) {
+                <a [href]="place.googleMapsUrl" target="_blank" class="contact-link">
+                  <span class="contact-icon">🗺️</span>
+                  View on Google Maps
+                </a>
+                }
+              </div>
+              }
+            </div>
+          </div>
+          }
+        </div>
+      </div>
+    </div>
+  </div>
+  }
+</div>
+}
+
+@if (loading()) {
+<div class="loading-container">
+  <div class="loader"></div>
+  <p class="loading-text">Discovering amazing places...</p>
+</div>
+}

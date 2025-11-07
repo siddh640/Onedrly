@@ -1,0 +1,16 @@
+<div class="search-container">
+  <div class="search-wrapper">
+    <div class="search-icon">🔍</div>
+    <input 
+      type="text" 
+      class="search-input" 
+      [(ngModel)]="destination"
+      (keypress)="handleKeyPress($event)"
+      placeholder="Enter your destination (e.g., Paris, Tokyo, New York...)"
+      autocomplete="off"
+    />
+    <button class="search-button" (click)="search()">
+      Search
+    </button>
+  </div>
+</div>

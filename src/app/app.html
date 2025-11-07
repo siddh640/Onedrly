@@ -1,0 +1,81 @@
+@if (!isAuthPage()) {
+<div class="app-container"> 
+  <!-- Navigation Header -->
+  <nav class="nav-header">
+    <div class="nav-content">
+      <div class="nav-brand">
+        <h1 class="brand-title">
+          <span class="title-gradient"><span class="thin-letter">O</span>∩<span class="thin-letter">e</span><span class="cursive-text">drly</span></span>
+        </h1>
+      </div>
+      <div class="nav-actions">
+        @if (currentUser()) {
+          <div class="user-menu">
+            <button class="user-btn" (click)="goToProfile()">
+              <span class="user-avatar">{{ currentUser()?.name?.charAt(0)?.toUpperCase() }}</span>
+              <span class="user-name">{{ currentUser()?.name }}</span>
+            </button>
+            <button class="logout-btn" (click)="logout()">
+              Sign Out
+            </button>
+          </div>
+        } @else {
+          <div class="auth-buttons">
+            <button class="login-btn" (click)="goToLogin()">
+              Sign In
+            </button>
+            <button class="register-btn" (click)="goToRegister()">
+              Sign Up
+            </button>
+          </div>
+        }
+      </div>
+    </div>
+  </nav>
+
+  <!-- Hero Section -->
+  @if (!searched()) {
+    <header class="hero-section">
+      <div class="hero-content">
+        <h1 class="hero-title">
+          <span class="title-gradient"><span class="thin-letter">O</span>∩<span class="thin-letter">e</span><span class="cursive-text">drly</span></span>
+        </h1>
+        <p class="hero-subtitle">Discover Your Next Adventure</p>
+        <p class="hero-description">
+          Find amazing tourist attractions, delicious restaurants, and great shopping destinations all in one place
+        </p>
+      </div>
+    </header>
+  }
+
+  <!-- Search Bar -->
+  <app-search-bar (onSearch)="handleSearch($event)"></app-search-bar>
+
+  <!-- Main Content Area -->
+  <main class="main-content">
+    <!-- Results Section -->
+    @if (searched()) {
+      <app-results 
+        [destinationData]="destinationData()" 
+        [weatherData]="weatherData()"
+        [loading]="loading()">
+      </app-results>
+    }
+    
+    <!-- Router outlet for detail pages -->
+    <router-outlet />
+  </main>
+
+  <!-- Footer -->
+  @if (!loading() && !searched()) {
+    <footer class="footer">
+      <p class="footer-text">✈️ Start exploring by searching for any destination</p>
+    </footer>
+  }
+</div>
+}
+
+<!-- Auth Pages (Login/Register) -->
+@if (isAuthPage()) {
+<router-outlet />
+}
