@@ -1,0 +1,72 @@
+<div class="chat-container" [class.open]="isOpen()">
+  <button class="chat-toggle" (click)="toggle()">
+    <span class="icon">🤖</span>
+    <span class="label">{{ isOpen() ? 'Close Assistant' : 'Ask AI' }}</span>
+  </button>
+
+  @if (isOpen()) {
+    <section class="chat-panel">
+      <header class="chat-header">
+        <div>
+          <p class="assistant-label">Onedrly AI Concierge</p>
+          <small>{{ destination || 'Global' }} insights</small>
+        </div>
+        <button class="close-btn" (click)="toggle()">✕</button>
+      </header>
+
+      <div class="chat-body">
+        @for (msg of messages(); track $index) {
+          <div class="chat-row" [class.user]="msg.role === 'user'">
+            <div class="chat-bubble">
+              <p>{{ msg.text }}</p>
+              @if (msg.suggestions?.length) {
+                <div class="suggestion-grid">
+                  @for (suggestion of msg.suggestions; track suggestion.name) {
+                    <article class="suggestion-card" (click)="selectSuggestion(suggestion)">
+                      @if (suggestion.photos?.length) {
+                        <img [src]="suggestion.photos?.[0]" [alt]="suggestion.name" loading="lazy">
+                      }
+                      <div>
+                        <h4>{{ suggestion.name }}</h4>
+                        @if (suggestion.rating) {
+                          <p class="rating">⭐ {{ suggestion.rating }}</p>
+                        }
+                        <p class="address">{{ suggestion.address }}</p>
+                      </div>
+                    </article>
+                  }
+                </div>
+              }
+              @if (msg.tips?.length) {
+                <ul class="tip-list">
+                  @for (tip of msg.tips; track tip) {
+                    <li>💡 {{ tip }}</li>
+                  }
+                </ul>
+              }
+            </div>
+          </div>
+        }
+      </div>
+
+      <footer class="chat-footer">
+        <div class="quick-prompts">
+          <button (click)="useQuickPrompt('Best restaurants in ' + (destination || 'Delhi'))">🍽️ Food</button>
+          <button (click)="useQuickPrompt('Plan a 3 day trip to ' + (destination || 'Goa'))">🗺️ Trip Plan</button>
+          <button (click)="useQuickPrompt('Budget hotels near beach in ' + (destination || 'Goa'))">🏨 Budget</button>
+        </div>
+        <div class="input-row">
+          <input
+            type="text"
+            [(ngModel)]="question"
+            placeholder="Ask anything..."
+            (keyup.enter)="sendMessage()"
+          >
+          <button class="send-btn" (click)="sendMessage()" [disabled]="loading()">Send</button>
+        </div>
+      </footer>
+    </section>
+  }
+</div>
+
+

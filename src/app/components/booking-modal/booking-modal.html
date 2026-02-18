@@ -5,6 +5,17 @@
       <button class="close-btn" (click)="close()">&times;</button>
     </div>
 
+    <div class="auth-banner" *ngIf="!isAuthenticated">
+      <div>
+        <h3>Sign in to complete your booking</h3>
+        <p>Create an account to save trips, track bookings, and unlock concierge support.</p>
+      </div>
+      <div class="auth-actions">
+        <button class="login-action" (click)="goToLogin()">Sign In</button>
+        <button class="signup-action" (click)="goToRegister()">Create Account</button>
+      </div>
+    </div>
+
     <!-- Search Form -->
     <div class="search-section">
       <div class="search-form">

@@ -1,0 +1,98 @@
+<section class="planner-card">
+  <header>
+    <div>
+      <p class="eyebrow">AI Trip Planner</p>
+      <h2>Instant Itinerary</h2>
+      <p class="subtitle">Enter basics and let the AI craft perfect days.</p>
+    </div>
+    <button class="cta" (click)="planTrip()" [disabled]="loading" type="button">
+      @if (loading) {
+        <span>Planning…</span>
+      } @else {
+        <span>Generate Plan</span>
+      }
+    </button>
+  </header>
+
+  <form class="planner-form" (submit)="$event.preventDefault(); planTrip();">
+    <div class="form-grid">
+      <label>
+        <span>Destination</span>
+        <input type="text" [(ngModel)]="destination" name="destination" placeholder="e.g. Goa">
+      </label>
+      <label>
+        <span>Budget (INR)</span>
+        <input type="number" [(ngModel)]="budget" name="budget" min="5000" step="1000">
+      </label>
+      <label>
+        <span>Start Date</span>
+        <input type="date" [(ngModel)]="startDate" name="startDate">
+      </label>
+      <label>
+        <span>End Date</span>
+        <input type="date" [(ngModel)]="endDate" name="endDate">
+      </label>
+      <label>
+        <span>Travelers</span>
+        <input type="number" [(ngModel)]="travelers" name="travelers" min="1">
+      </label>
+      <label>
+        <span>Preferred Pace</span>
+        <select [(ngModel)]="pace" name="pace">
+          <option value="relaxed">Relaxed</option>
+          <option value="balanced">Balanced</option>
+          <option value="adventure">Adventure</option>
+        </select>
+      </label>
+    </div>
+
+    <div class="preferences">
+      <label>
+        <input type="checkbox" [(ngModel)]="includeShopping" name="shopping">
+        <span>Include shopping breaks</span>
+      </label>
+      <label>
+        <input type="checkbox" [(ngModel)]="includeNightlife" name="nightlife">
+        <span>Include nightlife ideas</span>
+      </label>
+    </div>
+  </form>
+
+  @if (errorMessage && errorMessage.trim() !== '') {
+    <div class="error">{{ errorMessage }}</div>
+  }
+
+  @if (result) {
+    <article class="planner-result">
+      <div class="summary">
+        <h3>{{ result.summary.destination }} · {{ result.summary.totalDays }} days</h3>
+        <p>Budget ₹{{ result.summary.budget | number }} (≈ ₹{{ result.summary.budgetPerDay | number }} / day)</p>
+        <p>{{ result.summary.weatherTip }}</p>
+        <p><strong>Must try food:</strong> {{ result.summary.mustTryFood.join(', ') }}</p>
+      </div>
+
+      <div class="itinerary">
+        @for (day of result.itinerary; track day.day) {
+          <section class="day-card">
+            <h4>{{ day.day }} <small>{{ day.date }}</small></h4>
+            <ul>
+              @for (activity of day.activities; track activity.title) {
+                <li>
+                  <div>
+                    <p class="activity-title">{{ activity.title }}</p>
+                    <p class="activity-desc">{{ activity.details.description }}</p>
+                  </div>
+                  @if (activity.details.rating) {
+                    <span class="badge">⭐ {{ activity.details.rating }}</span>
+                  }
+                </li>
+              }
+            </ul>
+          </section>
+        }
+      </div>
+    </article>
+  }
+</section>
+
+

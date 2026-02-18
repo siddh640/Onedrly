@@ -60,13 +60,14 @@ class GooglePlacesService {
       const formattedAddress = geocode.data.results[0].formatted_address;
 
       // Step 2: Search different categories in parallel
-      const [attractions, restaurants, shopping] = await Promise.all([
+      const [attractions, restaurants, shopping, medical] = await Promise.all([
         this.searchNearbyPlaces(location, 'tourist_attraction', destination),
         this.searchNearbyPlaces(location, 'restaurant', destination),
-        this.searchNearbyPlaces(location, 'shopping_mall|store', destination)
+        this.searchNearbyPlaces(location, 'shopping_mall|store', destination),
+        this.searchNearbyPlaces(location, 'hospital|doctor|pharmacy', destination)
       ]);
 
-      console.log(`✅ Found: ${attractions.length} attractions, ${restaurants.length} restaurants, ${shopping.length} shopping`);
+      console.log(`✅ Found: ${attractions.length} attractions, ${restaurants.length} restaurants, ${shopping.length} shopping, ${medical.length} medical facilities`);
 
       return {
         destination: destination,
@@ -75,6 +76,7 @@ class GooglePlacesService {
         attractions: attractions,
         restaurants: restaurants,
         shopping: shopping,
+        medical: medical,
         source: 'google_places'
       };
 
@@ -243,13 +245,14 @@ class GooglePlacesService {
       const lon = coords.lon;
 
       // Search OpenStreetMap Overpass API with specific filters
-      const [attractions, restaurants, shopping] = await Promise.all([
+      const [attractions, restaurants, shopping, medical] = await Promise.all([
         this.searchAttractionsOSM(lat, lon, destination),
         this.searchRestaurantsOSM(lat, lon, destination),
-        this.searchShoppingOSM(lat, lon, destination)
+        this.searchShoppingOSM(lat, lon, destination),
+        this.searchMedicalOSM(lat, lon, destination)
       ]);
 
-      console.log(`✅ Found via OSM: ${attractions.length} attractions, ${restaurants.length} restaurants, ${shopping.length} shopping`);
+      console.log(`✅ Found via OSM: ${attractions.length} attractions, ${restaurants.length} restaurants, ${shopping.length} shopping, ${medical.length} medical facilities`);
 
       return {
         destination: coords.display_name.split(',')[0],
@@ -258,6 +261,7 @@ class GooglePlacesService {
         attractions: attractions,
         restaurants: restaurants,
         shopping: shopping,
+        medical: medical,
         source: 'openstreetmap_unsplash'
       };
 
@@ -337,6 +341,33 @@ class GooglePlacesService {
       out center 30;`;
 
     return this.searchOverpass(lat, lon, destination, 'shop', 'shopping', query);
+  }
+
+  /**
+   * Search for medical facilities (hospitals, clinics, pharmacies)
+   */
+  async searchMedicalOSM(lat, lon, destination) {
+    const radius = 10000; // Larger radius for medical facilities
+    const query = `[out:json][timeout:25];
+      (
+        node["amenity"="hospital"](around:${radius},${lat},${lon});
+        node["amenity"="clinic"](around:${radius},${lat},${lon});
+        node["amenity"="doctors"](around:${radius},${lat},${lon});
+        node["amenity"="dentist"](around:${radius},${lat},${lon});
+        node["amenity"="pharmacy"](around:${radius},${lat},${lon});
+        node["amenity"="veterinary"](around:${radius},${lat},${lon});
+        node["healthcare"="hospital"](around:${radius},${lat},${lon});
+        node["healthcare"="clinic"](around:${radius},${lat},${lon});
+        node["healthcare"="doctor"](around:${radius},${lat},${lon});
+        node["healthcare"="dentist"](around:${radius},${lat},${lon});
+        node["healthcare"="pharmacy"](around:${radius},${lat},${lon});
+        way["amenity"="hospital"](around:${radius},${lat},${lon});
+        way["amenity"="clinic"](around:${radius},${lat},${lon});
+        way["amenity"="pharmacy"](around:${radius},${lat},${lon});
+      );
+      out center 30;`;
+
+    return this.searchOverpass(lat, lon, destination, 'amenity', 'medical', query);
   }
 
   /**
@@ -587,7 +618,8 @@ class GooglePlacesService {
     const descriptions = {
       'attractions': `${placeName} is a popular tourist attraction in ${destination}. Known for its cultural significance and historical value, it attracts thousands of visitors every year. A must-visit destination for anyone exploring ${destination}.`,
       'restaurants': `${placeName} is a renowned restaurant in ${destination}, offering authentic local cuisine and a memorable dining experience. Popular among both locals and tourists for its exceptional food quality and ambiance.`,
-      'shopping': `${placeName} is a popular shopping destination in ${destination}, offering a wide variety of products and an excellent shopping experience. Perfect for finding unique items and experiencing local commerce.`
+      'shopping': `${placeName} is a popular shopping destination in ${destination}, offering a wide variety of products and an excellent shopping experience. Perfect for finding unique items and experiencing local commerce.`,
+      'medical': `${placeName} is a trusted medical facility in ${destination}, providing quality healthcare services. Equipped with modern facilities and experienced medical professionals, it serves both local residents and medical tourists seeking reliable healthcare.`
     };
     
     return descriptions[category] || `${placeName} is a notable place in ${destination}, worth visiting for its unique character and local charm.`;
@@ -608,10 +640,11 @@ class GooglePlacesService {
   async getComprehensiveFallbackData(destination) {
     console.log(`📦 Generating comprehensive fallback data for ${destination}`);
 
-    const [attractions, restaurants, shopping] = await Promise.all([
+    const [attractions, restaurants, shopping, medical] = await Promise.all([
       this.getFallbackPlaces(destination, 'attractions'),
       this.getFallbackPlaces(destination, 'restaurants'),
-      this.getFallbackPlaces(destination, 'shopping')
+      this.getFallbackPlaces(destination, 'shopping'),
+      this.getFallbackPlaces(destination, 'medical')
     ]);
 
     return {
@@ -621,6 +654,7 @@ class GooglePlacesService {
       attractions: attractions,
       restaurants: restaurants,
       shopping: shopping,
+      medical: medical,
       source: 'enhanced_fallback'
     };
   }
@@ -677,6 +711,20 @@ class GooglePlacesService {
         { name: 'Palika Bazaar', type: 'underground market', icon: '🛍️' },
         { name: 'Janpath Market', type: 'street shopping', icon: '🛍️' },
         { name: 'Nehru Place', type: 'electronics', icon: '💻' }
+      ],
+      'medical': [
+        { name: 'Apollo Hospital', type: 'hospital', icon: '🏥', priceLevel: 4 },
+        { name: 'Fortis Healthcare', type: 'hospital', icon: '🏥', priceLevel: 4 },
+        { name: 'Max Super Specialty Hospital', type: 'hospital', icon: '🏥', priceLevel: 4 },
+        { name: 'AIIMS', type: 'hospital', icon: '🏥', priceLevel: 3 },
+        { name: 'Medanta Hospital', type: 'hospital', icon: '🏥', priceLevel: 4 },
+        { name: 'Apollo Pharmacy', type: 'pharmacy', icon: '💊', priceLevel: 2 },
+        { name: 'Wellness Forever', type: 'pharmacy', icon: '💊', priceLevel: 2 },
+        { name: 'MedPlus Pharmacy', type: 'pharmacy', icon: '💊', priceLevel: 2 },
+        { name: 'City Clinic', type: 'clinic', icon: '🏥', priceLevel: 2 },
+        { name: 'Health Care Clinic', type: 'clinic', icon: '🏥', priceLevel: 2 },
+        { name: 'Dental Care Center', type: 'dentist', icon: '🦷', priceLevel: 3 },
+        { name: 'Eye Care Center', type: 'clinic', icon: '👁️', priceLevel: 3 }
       ]
     };
 

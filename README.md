@@ -1,4 +1,4 @@
-# 🌍 Wandrly - Travel Booking Platform
+# 🌍 Onedrly - Travel Booking Platform
 
 A modern, worldwide travel booking platform with real-time data for flights, trains, buses, hotels, and rides.
 

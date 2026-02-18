@@ -6,10 +6,13 @@ import { WeatherData } from '../../services/weather';
 import { DataSharingService } from '../../services/data-sharing';
 import { WeatherDetail } from '../weather-detail/weather-detail';
 import { BookingModal } from '../booking-modal/booking-modal';
+import { MedicalAppointmentModal } from '../medical-appointment-modal/medical-appointment-modal';
+import { FavoritesService } from '../../services/favorites.service';
+import { AuthService } from '../../services/auth.service';
 
 @Component({
   selector: 'app-results',
-  imports: [CommonModule, RouterModule, WeatherDetail, BookingModal],
+  imports: [CommonModule, RouterModule, WeatherDetail, BookingModal, MedicalAppointmentModal],
   templateUrl: './results.html',
   styleUrl: './results.css'
 })
@@ -20,13 +23,20 @@ export class Results {
   
   protected showBookingModal = signal(false);
   protected showDetailsModal = signal(false);
-  protected selectedCategory = signal<'attractions' | 'restaurants' | 'shopping' | null>(null);
+  protected selectedCategory = signal<'attractions' | 'restaurants' | 'shopping' | 'medical' | null>(null);
+  protected showMedicalModal = signal(false);
+  protected selectedMedicalFacility = signal<Place | null>(null);
   protected selectedPlaces = signal<Place[]>([]);
 
   // Preview limit
   readonly PREVIEW_LIMIT = 10;
 
-  constructor(private router: Router, private dataSharing: DataSharingService) {}
+  constructor(
+    private router: Router,
+    private dataSharing: DataSharingService,
+    private favoritesService: FavoritesService,
+    private authService: AuthService
+  ) {}
 
   get hasData(): boolean {
     return this.destinationData() !== null;
@@ -45,6 +55,11 @@ export class Results {
   get shoppingToShow(): Place[] {
     const shopping = this.destinationData()?.shopping || [];
     return shopping.slice(0, this.PREVIEW_LIMIT);
+  }
+
+  get medicalToShow(): Place[] {
+    const medical = this.destinationData()?.medical || [];
+    return medical.slice(0, this.PREVIEW_LIMIT);
   }
 
 
@@ -104,7 +119,7 @@ export class Results {
     return openNow ? 'Open Now' : 'Closed';
   }
 
-  onColumnClick(category: 'attractions' | 'restaurants' | 'shopping'): void {
+  onColumnClick(category: 'attractions' | 'restaurants' | 'shopping' | 'medical'): void {
     // Add visual feedback
     this.showColumnFeedback(category);
     
@@ -121,6 +136,9 @@ export class Results {
         break;
       case 'shopping':
         places = this.destinationData()?.shopping || [];
+        break;
+      case 'medical':
+        places = this.destinationData()?.medical || [];
         break;
     }
     
@@ -139,6 +157,7 @@ export class Results {
       case 'attractions': return '🏛️';
       case 'restaurants': return '🍽️';
       case 'shopping': return '🛍️';
+      case 'medical': return '🏥';
       default: return '📍';
     }
   }
@@ -148,6 +167,7 @@ export class Results {
       case 'attractions': return 'Tourist Attractions';
       case 'restaurants': return 'Restaurants & Dining';
       case 'shopping': return 'Shopping & Malls';
+      case 'medical': return 'Medical Facilities';
       default: return 'Places';
     }
   }
@@ -180,5 +200,61 @@ export class Results {
 
   closeBookingModal(): void {
     this.showBookingModal.set(false);
+  }
+
+  openMedicalModal(facility: Place): void {
+    // Close any other open modals first
+    this.showDetailsModal.set(false);
+    this.showBookingModal.set(false);
+    this.selectedMedicalFacility.set(facility);
+    this.showMedicalModal.set(true);
+  }
+
+  closeMedicalModal(): void {
+    this.showMedicalModal.set(false);
+    this.selectedMedicalFacility.set(null);
+  }
+
+  onAppointmentBooked(data: any): void {
+    console.log('Appointment booked:', data);
+    // You can show a success message or update UI here
+  }
+
+  getActiveCategory(): 'attractions' | 'restaurants' | 'shopping' | 'medical' {
+    return this.selectedCategory() || 'attractions';
+  }
+
+  isFavorite(place: Place): boolean {
+    return this.favoritesService.isPlaceFavorited(place);
+  }
+
+  favoriteButtonLabel(place: Place): string {
+    return this.isFavorite(place) ? 'Saved' : 'Save';
+  }
+
+  handleFavoriteClick(
+    place: Place,
+    category: 'attractions' | 'restaurants' | 'shopping' | 'medical',
+    event: Event
+  ): void {
+    event.stopPropagation();
+
+    if (!this.authService.isLoggedIn()) {
+      alert('Please sign in to save your favorites.');
+      return;
+    }
+
+    this.favoritesService.toggleFavorite(place, category).subscribe({
+      next: (isSaved) => {
+        const message = isSaved
+          ? `${place.name} saved to favorites`
+          : `${place.name} removed from favorites`;
+        console.log(message);
+      },
+      error: (error) => {
+        console.error('Error toggling favorite:', error);
+        alert(error?.message || 'Unable to update favorites right now.');
+      }
+    });
   }
 }

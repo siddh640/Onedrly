@@ -1,0 +1,418 @@
+.modal-overlay {
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.75);
+  backdrop-filter: blur(4px);
+  -webkit-backdrop-filter: blur(4px);
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  z-index: 3000;
+  padding: 1rem;
+  animation: fadeIn 0.3s ease-out;
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+.modal-content {
+  background: var(--card-bg, #ffffff);
+  border-radius: 1.5rem;
+  max-width: 650px;
+  width: 100%;
+  max-height: 90vh;
+  overflow-y: auto;
+  position: relative;
+  box-shadow: 0 25px 80px rgba(0, 0, 0, 0.4),
+              0 10px 30px rgba(120, 119, 198, 0.2);
+  animation: slideUp 0.3s ease-out;
+  border: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(30px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
+.modal-content::-webkit-scrollbar {
+  width: 8px;
+}
+
+.modal-content::-webkit-scrollbar-track {
+  background: rgba(0, 0, 0, 0.05);
+  border-radius: 4px;
+}
+
+.modal-content::-webkit-scrollbar-thumb {
+  background: linear-gradient(135deg, #7877c6 0%, #ff6e7f 50%, #52b69a 100%);
+  border-radius: 4px;
+}
+
+.modal-content::-webkit-scrollbar-thumb:hover {
+  background: linear-gradient(135deg, #6b6ab8 0%, #e85d6d 50%, #47a389 100%);
+}
+
+.close-btn {
+  position: absolute;
+  top: 1.25rem;
+  right: 1.25rem;
+  background: rgba(0, 0, 0, 0.05);
+  border: none;
+  font-size: 1.75rem;
+  cursor: pointer;
+  color: var(--card-text, #0f172a);
+  width: 2.75rem;
+  height: 2.75rem;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  border-radius: 50%;
+  transition: all 0.2s;
+  z-index: 10;
+  font-weight: 300;
+  line-height: 1;
+}
+
+.close-btn:hover {
+  background: rgba(255, 110, 127, 0.15);
+  color: #ff6e7f;
+  transform: rotate(90deg);
+}
+
+.modal-header {
+  padding: 2.5rem 2.5rem 1.5rem;
+  border-bottom: 2px solid rgba(120, 119, 198, 0.1);
+  background: linear-gradient(135deg, rgba(120, 119, 198, 0.05) 0%, rgba(255, 110, 127, 0.05) 50%, rgba(82, 182, 154, 0.05) 100%);
+  border-radius: 1.5rem 1.5rem 0 0;
+}
+
+.modal-header h2 {
+  margin: 0 0 1rem;
+  font-size: 1.75rem;
+  font-weight: 700;
+  background: linear-gradient(135deg, #7877c6 0%, #ff6e7f 50%, #52b69a 100%);
+  -webkit-background-clip: text;
+  -webkit-text-fill-color: transparent;
+  background-clip: text;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+}
+
+.modal-header h2::before {
+  content: '🏥';
+  font-size: 1.5rem;
+  -webkit-text-fill-color: initial;
+}
+
+.facility-name {
+  font-size: 1.15rem;
+  font-weight: 600;
+  color: var(--card-text, #0f172a);
+  margin: 0.75rem 0 0.5rem;
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.facility-name::before {
+  content: '📍';
+  font-size: 1rem;
+}
+
+.facility-address {
+  font-size: 0.95rem;
+  color: rgba(0, 0, 0, 0.65);
+  margin: 0;
+  padding-left: 1.5rem;
+  line-height: 1.5;
+}
+
+.appointment-form {
+  padding: 2.5rem;
+}
+
+.form-group {
+  margin-bottom: 1.75rem;
+}
+
+.form-group label {
+  display: block;
+  margin-bottom: 0.75rem;
+  font-weight: 600;
+  font-size: 0.95rem;
+  color: var(--card-text, #0f172a);
+  letter-spacing: 0.3px;
+}
+
+.form-group input,
+.form-group textarea {
+  width: 100%;
+  padding: 1rem 1.25rem;
+  border: 2px solid rgba(0, 0, 0, 0.1);
+  border-radius: 0.75rem;
+  font-size: 1rem;
+  background: var(--dropdown-bg, #ffffff);
+  color: var(--dropdown-text, #0f172a);
+  transition: all 0.3s ease;
+  font-family: inherit;
+  box-sizing: border-box;
+}
+
+.form-group input:hover,
+.form-group textarea:hover {
+  border-color: rgba(120, 119, 198, 0.3);
+}
+
+.form-group input:focus,
+.form-group textarea:focus {
+  outline: none;
+  border-color: #7877c6;
+  box-shadow: 0 0 0 4px rgba(120, 119, 198, 0.1);
+  transform: translateY(-1px);
+}
+
+.form-group input::placeholder,
+.form-group textarea::placeholder {
+  color: rgba(0, 0, 0, 0.4);
+  font-style: italic;
+}
+
+.form-row {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 1rem;
+}
+
+.error-message {
+  background: linear-gradient(135deg, rgba(255, 110, 127, 0.1) 0%, rgba(255, 110, 127, 0.05) 100%);
+  color: #c33;
+  padding: 1rem 1.25rem;
+  border-radius: 0.75rem;
+  margin-bottom: 1.5rem;
+  font-size: 0.95rem;
+  border-left: 4px solid #ff6e7f;
+  display: flex;
+  align-items: center;
+  gap: 0.75rem;
+  font-weight: 500;
+}
+
+.error-message::before {
+  content: '⚠️';
+  font-size: 1.25rem;
+}
+
+.form-actions {
+  display: flex;
+  gap: 1rem;
+  justify-content: flex-end;
+  margin-top: 2.5rem;
+  padding-top: 2rem;
+  border-top: 2px solid rgba(120, 119, 198, 0.1);
+}
+
+.btn-primary,
+.btn-secondary {
+  padding: 1rem 2rem;
+  border: none;
+  border-radius: 0.75rem;
+  font-size: 1rem;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  letter-spacing: 0.3px;
+  min-width: 140px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 0.5rem;
+}
+
+.btn-primary {
+  background: linear-gradient(135deg, #7877c6 0%, #ff6e7f 50%, #52b69a 100%);
+  background-size: 200% 200%;
+  color: white;
+  box-shadow: 0 4px 15px rgba(120, 119, 198, 0.3);
+  animation: gradientShift 3s ease infinite;
+}
+
+@keyframes gradientShift {
+  0%, 100% {
+    background-position: 0% 50%;
+  }
+  50% {
+    background-position: 100% 50%;
+  }
+}
+
+.btn-primary:hover:not(:disabled) {
+  transform: translateY(-3px);
+  box-shadow: 0 8px 25px rgba(120, 119, 198, 0.5);
+  background-position: 100% 50%;
+}
+
+.btn-primary:active:not(:disabled) {
+  transform: translateY(-1px);
+}
+
+.btn-primary:disabled {
+  opacity: 0.6;
+  cursor: not-allowed;
+  transform: none;
+}
+
+.btn-secondary {
+  background: rgba(0, 0, 0, 0.05);
+  color: var(--card-text, #0f172a);
+  border: 2px solid rgba(0, 0, 0, 0.1);
+}
+
+.btn-secondary:hover {
+  background: rgba(0, 0, 0, 0.1);
+  border-color: rgba(0, 0, 0, 0.2);
+  transform: translateY(-2px);
+}
+
+.success-content {
+  padding: 3rem 2.5rem;
+  text-align: center;
+}
+
+.success-icon {
+  width: 5rem;
+  height: 5rem;
+  border-radius: 50%;
+  background: linear-gradient(135deg, #52b69a 0%, #7877c6 100%);
+  color: white;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 2.5rem;
+  margin: 0 auto 2rem;
+  box-shadow: 0 8px 25px rgba(82, 182, 154, 0.4);
+  animation: scaleIn 0.5s ease-out;
+}
+
+@keyframes scaleIn {
+  from {
+    transform: scale(0);
+    opacity: 0;
+  }
+  to {
+    transform: scale(1);
+    opacity: 1;
+  }
+}
+
+.success-content h2 {
+  margin: 0 0 1.5rem;
+  color: var(--card-text, #0f172a);
+}
+
+.appointment-info {
+  background: linear-gradient(135deg, rgba(120, 119, 198, 0.08) 0%, rgba(82, 182, 154, 0.08) 100%);
+  padding: 2rem;
+  border-radius: 1rem;
+  margin-bottom: 2rem;
+  text-align: left;
+  border: 2px solid rgba(120, 119, 198, 0.15);
+}
+
+.appointment-info p {
+  margin: 0.75rem 0;
+  color: var(--card-text, #0f172a);
+  font-size: 1rem;
+  line-height: 1.6;
+}
+
+.appointment-info p strong {
+  color: #7877c6;
+  font-weight: 600;
+  display: inline-block;
+  min-width: 100px;
+}
+
+.confirmation-message {
+  margin-bottom: 2rem;
+  text-align: left;
+}
+
+.confirmation-message p {
+  margin-bottom: 1rem;
+  color: var(--card-text, #0f172a);
+}
+
+.next-steps {
+  list-style: none;
+  padding: 0;
+  margin: 0;
+}
+
+.next-steps li {
+  padding: 0.5rem 0;
+  padding-left: 1.5rem;
+  position: relative;
+  color: var(--card-text, #0f172a);
+}
+
+.next-steps li::before {
+  content: '✓';
+  position: absolute;
+  left: 0;
+  color: #52b69a;
+  font-weight: bold;
+}
+
+@media (max-width: 640px) {
+  .form-row {
+    grid-template-columns: 1fr;
+  }
+  
+  .modal-content {
+    margin: 0.5rem;
+    border-radius: 1rem;
+    max-height: 95vh;
+  }
+
+  .modal-header {
+    padding: 2rem 1.5rem 1.25rem;
+  }
+
+  .modal-header h2 {
+    font-size: 1.5rem;
+  }
+
+  .appointment-form {
+    padding: 1.5rem;
+  }
+
+  .form-actions {
+    flex-direction: column;
+  }
+
+  .btn-primary,
+  .btn-secondary {
+    width: 100%;
+  }
+
+  .success-content {
+    padding: 2rem 1.5rem;
+  }
+}
+

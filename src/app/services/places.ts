@@ -21,6 +21,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { Observable, of, forkJoin } from 'rxjs';
 import { map, catchError, switchMap } from 'rxjs/operators';
+import { environment } from '../../environments/environment';
 
 export interface Place {
   id: string;
@@ -77,6 +78,7 @@ export interface DestinationData {
   attractions: Place[];
   restaurants: Place[];
   shopping: Place[];
+  medical?: Place[];
 }
 
 @Injectable({
@@ -99,14 +101,15 @@ export class Places {
     console.log(`🔍 Searching destination: ${destination}`);
     
     // Try backend API first (if running)
-    return this.http.get<any>(`http://localhost:3000/api/places/search/${encodeURIComponent(destination)}`).pipe(
+    return this.http.get<any>(`${environment.backendUrl}/places/search/${encodeURIComponent(destination)}`).pipe(
       map(response => {
         console.log('✅ Got places from backend API:', response.data);
         return {
           destination: response.data.destination || destination,
           attractions: response.data.attractions || [],
           restaurants: response.data.restaurants || [],
-          shopping: response.data.shopping || []
+          shopping: response.data.shopping || [],
+          medical: response.data.medical || []
         };
       }),
       catchError((error: any) => {
@@ -138,13 +141,15 @@ export class Places {
         return forkJoin({
           attractions: this.getAttractions(coords.lat, coords.lon, destination),
           restaurants: this.getRestaurants(coords.lat, coords.lon, destination),
-          shopping: this.getShopping(coords.lat, coords.lon, destination)
+          shopping: this.getShopping(coords.lat, coords.lon, destination),
+          medical: of([]) // Medical will come from backend or mock data
         }).pipe(
-          map((data: { attractions: Place[]; restaurants: Place[]; shopping: Place[] }) => ({
+          map((data: { attractions: Place[]; restaurants: Place[]; shopping: Place[]; medical: Place[] }) => ({
             destination,
             attractions: data.attractions.length > 0 ? data.attractions : this.getEnhancedMockPlaces(destination, 'attractions'),
             restaurants: data.restaurants.length > 0 ? data.restaurants : this.getEnhancedMockPlaces(destination, 'restaurants'),
-            shopping: data.shopping.length > 0 ? data.shopping : this.getEnhancedMockPlaces(destination, 'shopping')
+            shopping: data.shopping.length > 0 ? data.shopping : this.getEnhancedMockPlaces(destination, 'shopping'),
+            medical: this.getEnhancedMockPlaces(destination, 'medical')
           }))
         );
       }),
@@ -1109,11 +1114,14 @@ export class Places {
       }
     ];
 
+    const mockMedical: Place[] = this.getEnhancedMockPlaces(destination, 'medical');
+
     return of({
       destination,
       attractions: mockAttractions,
       restaurants: mockRestaurants,
-      shopping: mockShopping
+      shopping: mockShopping,
+      medical: mockMedical
     });
   }
 
@@ -1148,6 +1156,16 @@ export class Places {
         { name: 'Fashion Boutique', type: 'fashion' },
         { name: 'Handicrafts Store', type: 'handicrafts' },
         { name: 'Souvenir Shop', type: 'souvenirs' }
+      ],
+      'medical': [
+        { name: 'Apollo Hospital', type: 'hospital' },
+        { name: 'City Clinic', type: 'clinic' },
+        { name: 'Apollo Pharmacy', type: 'pharmacy' },
+        { name: 'Dental Care Center', type: 'dentist' },
+        { name: 'Eye Care Center', type: 'clinic' },
+        { name: 'Health Care Clinic', type: 'clinic' },
+        { name: 'Wellness Forever', type: 'pharmacy' },
+        { name: 'Fortis Healthcare', type: 'hospital' }
       ]
     };
 

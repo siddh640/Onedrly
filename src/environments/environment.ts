@@ -5,8 +5,8 @@
 export const environment = {
   production: false,
   
-  // Backend API URL (your custom API server)
-  backendUrl: 'http://localhost:3000/api',
+  // Backend API URL – use 127.0.0.1 if localhost doesn't resolve (e.g. on some Windows)
+  backendUrl: 'http://127.0.0.1:3000/api',
   
   // Google Places API (used directly by frontend for some features)
   googlePlaces: {

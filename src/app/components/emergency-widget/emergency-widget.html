@@ -1,0 +1,59 @@
+@if (destination) {
+  <section class="emergency-card">
+    <header>
+      <div>
+        <p class="eyebrow">Emergency Ready</p>
+        <h3>Critical Contacts · {{ destination }}</h3>
+      </div>
+      @if (loading) {
+        <span class="badge">Updating…</span>
+      }
+    </header>
+
+    @if (errorMessage) {
+      <p class="error">{{ errorMessage }}</p>
+    }
+
+    @if (data) {
+      <div class="grid">
+        <article>
+          <h4>Hospitals</h4>
+          <ul>
+            @for (item of data.hospitals; track item['name']) {
+              <li>
+                <p class="title">{{ item['name'] }}</p>
+                <p class="desc">{{ item['address'] }}</p>
+              </li>
+            }
+          </ul>
+        </article>
+
+        <article>
+          <h4>Police</h4>
+          <ul>
+            @for (item of data.police; track item['name']) {
+              <li>
+                <p class="title">{{ item['name'] }}</p>
+                <p class="desc">{{ item['address'] }}</p>
+              </li>
+            }
+          </ul>
+        </article>
+
+        <article>
+          <h4>Helplines</h4>
+          <ul>
+            @for (item of data.helplines; track item.label) {
+              <li>
+                <p class="title">{{ item.label }}</p>
+                <p class="desc">{{ item.phone }}</p>
+              </li>
+            }
+          </ul>
+        </article>
+      </div>
+    }
+  </section>
+}
+
+

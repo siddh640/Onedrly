@@ -2,6 +2,7 @@ import { Injectable } from '@angular/core';
 import { HttpClient, HttpErrorResponse } from '@angular/common/http';
 import { Observable, of, throwError } from 'rxjs';
 import { map, catchError, switchMap } from 'rxjs/operators';
+import { environment } from '../../environments/environment';
 
 export interface WeatherData {
   temperature: number;
@@ -85,23 +86,35 @@ export interface ForecastResponse {
   };
 }
 
+interface ApiResponse<T> {
+  success: boolean;
+  data?: T;
+  message?: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class Weather {
   private readonly OPENWEATHER_API_KEY = '724b2996b7c101c6669520e167bb44dc';
   private readonly OPENWEATHER_BASE_URL = 'https://api.openweathermap.org/data/2.5';
+  private readonly BACKEND_WEATHER_API = `${environment.backendUrl}/weather`;
 
   constructor(private http: HttpClient) {}
   
   getWeather(destination: string): Observable<WeatherData> {
-    const url = `${this.OPENWEATHER_BASE_URL}/weather?q=${encodeURIComponent(destination)}&appid=${this.OPENWEATHER_API_KEY}&units=metric`;
+    const backendUrl = `${this.BACKEND_WEATHER_API}/${encodeURIComponent(destination)}`;
     
-    return this.http.get<OpenWeatherResponse>(url).pipe(
-      map(response => this.transformOpenWeatherData(response)),
+    return this.http.get<ApiResponse<WeatherData>>(backendUrl).pipe(
+      map(response => {
+        if (response.success && response.data) {
+          return response.data;
+        }
+        throw new Error(response.message || 'Weather data unavailable');
+      }),
       catchError(error => {
-        console.error('Error fetching weather from OpenWeather:', error);
-        return this.getMockWeather();
+        console.warn('Backend weather API unavailable, falling back to OpenWeather:', error?.message || error);
+        return this.getWeatherFromOpenWeather(destination);
       })
     );
   }
@@ -116,15 +129,44 @@ export class Weather {
   }
 
   getForecast(destination: string): Observable<ForecastResponse> {
-    const url = `${this.OPENWEATHER_BASE_URL}/forecast?q=${encodeURIComponent(destination)}&appid=${this.OPENWEATHER_API_KEY}&units=metric`;
+    const backendUrl = `${this.BACKEND_WEATHER_API}/${encodeURIComponent(destination)}/forecast`;
+    
+    return this.http.get<ApiResponse<ForecastResponse>>(backendUrl).pipe(
+      map(response => {
+        if (response.success && response.data) {
+          return response.data;
+        }
+        throw new Error(response.message || 'Forecast unavailable');
+      }),
+      catchError(error => {
+        console.warn('Backend forecast API unavailable, falling back to OpenWeather:', error?.message || error);
+        return this.getForecastFromOpenWeather(destination);
+      })
+    );
+  }
+
+  getForecastByCoordinates(lat: number, lon: number): Observable<ForecastResponse> {
+    const url = `${this.OPENWEATHER_BASE_URL}/forecast?lat=${lat}&lon=${lon}&appid=${this.OPENWEATHER_API_KEY}&units=metric`;
     
     return this.http.get<ForecastResponse>(url).pipe(
       catchError(this.handleError)
     );
   }
 
-  getForecastByCoordinates(lat: number, lon: number): Observable<ForecastResponse> {
-    const url = `${this.OPENWEATHER_BASE_URL}/forecast?lat=${lat}&lon=${lon}&appid=${this.OPENWEATHER_API_KEY}&units=metric`;
+  private getWeatherFromOpenWeather(destination: string): Observable<WeatherData> {
+    const url = `${this.OPENWEATHER_BASE_URL}/weather?q=${encodeURIComponent(destination)}&appid=${this.OPENWEATHER_API_KEY}&units=metric`;
+    
+    return this.http.get<OpenWeatherResponse>(url).pipe(
+      map(response => this.transformOpenWeatherData(response)),
+      catchError(error => {
+        console.error('Error fetching weather from OpenWeather:', error);
+        return this.getMockWeather();
+      })
+    );
+  }
+
+  private getForecastFromOpenWeather(destination: string): Observable<ForecastResponse> {
+    const url = `${this.OPENWEATHER_BASE_URL}/forecast?q=${encodeURIComponent(destination)}&appid=${this.OPENWEATHER_API_KEY}&units=metric`;
     
     return this.http.get<ForecastResponse>(url).pipe(
       catchError(this.handleError)

@@ -1,7 +1,7 @@
 import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { AuthService, LoginCredentials } from '../../../services/auth.service';
 
 @Component({
@@ -18,10 +18,12 @@ export class Login {
 
   loading = false;
   errorMessage = '';
+  showPassword = false;
 
   constructor(
     private authService: AuthService,
-    private router: Router
+    private router: Router,
+    private route: ActivatedRoute
   ) {}
 
   onSubmit(): void {
@@ -32,7 +34,8 @@ export class Login {
       next: (response) => {
         this.loading = false;
         if (response.success) {
-          this.router.navigate(['/']);
+          const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl') || '/';
+          this.router.navigateByUrl(returnUrl);
         } else {
           this.errorMessage = response.message;
         }
@@ -46,10 +49,14 @@ export class Login {
   }
 
   goToRegister(): void {
-    this.router.navigate(['/register']);
+    const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl');
+    this.router.navigate(['/register'], {
+      queryParams: returnUrl ? { returnUrl } : undefined
+    });
   }
 
   goBack(): void {
-    this.router.navigate(['/']);
+    const returnUrl = this.route.snapshot.queryParamMap.get('returnUrl');
+    this.router.navigateByUrl(returnUrl || '/');
   }
 }

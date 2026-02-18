@@ -1,6 +1,6 @@
 import { Injectable } from '@angular/core';
 import { HttpClient, HttpHeaders } from '@angular/common/http';
-import { Observable, of, forkJoin } from 'rxjs';
+import { Observable, of, forkJoin, throwError } from 'rxjs';
 import { map, catchError } from 'rxjs/operators';
 import { environment } from '../../environments/environment';
 import { RequestOptimizerService } from './request-optimizer.service';
@@ -15,11 +15,63 @@ import {
   Booking
 } from '../models/travel.models';
 
+interface ApiResponse<T> {
+  success: boolean;
+  message?: string;
+  data?: T;
+}
+
+export interface BookingPayload {
+  bookingType: 'flight' | 'hotel' | 'train' | 'bus' | 'ride' | 'package';
+  tripDetails: {
+    origin?: {
+      name?: string;
+      code?: string;
+      coordinates?: {
+        latitude?: number;
+        longitude?: number;
+      };
+    };
+    destination?: {
+      name?: string;
+      code?: string;
+      coordinates?: {
+        latitude?: number;
+        longitude?: number;
+      };
+    };
+    departureDate?: Date | string;
+    returnDate?: Date | string;
+    tripType?: 'one-way' | 'round-trip' | 'multi-city';
+  };
+  travelers?: Array<Record<string, any>>;
+  flightDetails?: Record<string, any>;
+  hotelDetails?: Record<string, any>;
+  transportDetails?: Record<string, any>;
+  rideDetails?: Record<string, any>;
+  pricing: {
+    baseFare: number;
+    taxes?: number;
+    fees?: number;
+    discount?: number;
+    totalAmount: number;
+    currency: string;
+  };
+  payment: {
+    method: string;
+    paymentStatus: 'pending' | 'completed' | 'failed' | 'refunded';
+    paidAt?: Date | string;
+  };
+  bookingStatus: 'confirmed' | 'pending' | 'cancelled' | 'completed' | 'failed';
+  specialRequests?: string;
+  notes?: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class TravelBookingService {
-  private readonly API_BASE_URL = 'http://localhost:3000/api';
+  private readonly API_BASE_URL = environment.backendUrl;
   private amadeusToken: string = '';
 
   constructor(
@@ -281,27 +333,35 @@ export class TravelBookingService {
   /**
    * Create a booking
    */
-  createBooking(booking: Partial<Booking>): Observable<Booking> {
-    // In production, this would call the backend API
-    const newBooking: Booking = {
-      id: this.generateBookingId(),
-      userId: 'current-user-id', // Would come from auth service
-      bookingReference: this.generateBookingReference(),
-      status: 'confirmed',
-      bookingDate: new Date(),
-      ...booking
-    } as Booking;
-
-    console.log('✅ Booking created:', newBooking);
-    return of(newBooking);
+  createBooking(payload: BookingPayload): Observable<any> {
+    return this.http.post<ApiResponse<{ booking: any }>>(
+      `${this.API_BASE_URL}/bookings`,
+      payload
+    ).pipe(
+      map(response => {
+        if (!response.success) {
+          throw new Error(response.message || 'Failed to create booking');
+        }
+        return response.data?.booking;
+      }),
+      catchError(error => {
+        console.error('❌ Booking API error:', error);
+        return throwError(() => error);
+      })
+    );
   }
 
   /**
    * Get user's bookings
    */
-  getUserBookings(userId: string): Observable<Booking[]> {
-    // Mock data - in production would call API
-    return of([]);
+  getUserBookings(): Observable<any[]> {
+    return this.http.get<any>(`${this.API_BASE_URL}/bookings`).pipe(
+      map(response => response.data?.bookings || response.data || []),
+      catchError(error => {
+        console.error('❌ Error fetching bookings:', error);
+        return of([]);
+      })
+    );
   }
 
   // ==================== MOCK DATA GENERATORS ====================

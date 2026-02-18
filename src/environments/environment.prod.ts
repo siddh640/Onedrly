@@ -3,7 +3,10 @@
 
 export const environment = {
   production: true,
-  
+
+  // Backend API URL (deployed server)
+  backendUrl: 'https://api.onedrly.com/api', // update to actual prod URL
+
   googlePlaces: {
     apiKey: '',  // Not used in frontend (backend handles it)
     enabled: false

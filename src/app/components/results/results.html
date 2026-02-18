@@ -128,7 +128,49 @@
       </div>
     </div>
 
+    <!-- Column 4: Medical Facilities -->
+    @if (destinationData()?.medical && (destinationData()?.medical?.length ?? 0) > 0) {
+    <div class="grid-column clickable-column" (click)="onColumnClick('medical')" data-category="medical">
+      <div class="column-header">
+        <div class="column-icon">🏥</div>
+        <h2 class="column-title">Medical Facilities</h2>
+        <p class="column-count">{{ destinationData()?.medical?.length || 0 }} facilities</p>
+        <div class="click-hint">👆 Click to explore all medical facilities</div>
+      </div>
+      <div class="column-preview">
+        <div class="preview-stats">
+          <div class="stat-item">
+            <span class="stat-icon">🏥</span>
+            <span class="stat-text">Hospitals & Clinics</span>
+          </div>
+          <div class="stat-item">
+            <span class="stat-icon">💊</span>
+            <span class="stat-text">Pharmacies</span>
+          </div>
+        </div>
+        <div class="preview-highlights">
+          @for (place of getTopPlaces(destinationData()?.medical || []); track place.name; let i = $index) {
+          <div class="highlight-item" [style.display]="i < 10 ? 'flex' : 'none'">
+            <span class="highlight-name">{{ place.name }}</span>
+            @if (place.rating) {
+            <span class="highlight-rating">⭐ {{ place.rating }}</span>
+            }
+          </div>
+          }
+        </div>
+      </div>
+    </div>
+    }
+
   </div>
+
+  <!-- Medical Appointment Modal -->
+  <app-medical-appointment-modal
+    [facility]="selectedMedicalFacility()"
+    [isOpen]="showMedicalModal()"
+    (closeModal)="closeMedicalModal()"
+    (appointmentBooked)="onAppointmentBooked($event)">
+  </app-medical-appointment-modal>
 
   <!-- Place Details Modal -->
   @if (showDetailsModal()) {
@@ -166,6 +208,13 @@
             <!-- Place Info -->
             <div class="place-info">
               <h3 class="place-name">{{ place.name }}</h3>
+              <button
+                class="favorite-btn"
+                [class.saved]="isFavorite(place)"
+                (click)="handleFavoriteClick(place, getActiveCategory(), $event)">
+                <span class="favorite-icon">{{ isFavorite(place) ? '❤️' : '🤍' }}</span>
+                <span>{{ favoriteButtonLabel(place) }}</span>
+              </button>
               
               <!-- Rating & Reviews -->
               @if (place.rating) {
@@ -268,6 +317,16 @@
                   </div>
                   }
                 </div>
+              </div>
+              }
+              
+              <!-- Medical Appointment Button (only for medical facilities) -->
+              @if (selectedCategory() === 'medical') {
+              <div class="place-actions">
+                <button class="book-btn medical-btn" (click)="openMedicalModal(place); $event.stopPropagation()">
+                  <span class="btn-icon">🏥</span>
+                  <span>Book Appointment</span>
+                </button>
               </div>
               }
               

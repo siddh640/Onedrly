@@ -1,0 +1,133 @@
+{
+  "conversations": [
+    {
+      "id": "conv_1763123269441_47e3y3bwa",
+      "timestamp": "2025-11-14T12:27:49.441Z",
+      "userMessage": "Delhi",
+      "aiResponse": "I couldn’t reach live APIs for \"Delhi\", but here are curated Onedrly picks you can explore right now:\n\n### Manali\nA Himalayan hill town in Himachal Pradesh famed for snow-capped peaks, apple orchards, and adventure sports. Perfect for honeymooners, backpackers, and anyone chasing cool weather.\n• Must-see: Hadimba Devi Temple & ancient cedar forest, Solang Valley for paragliding, ATV rides, ziplining\n• Food highlight: Johnson’s Café (trout specialties)\n• Best for: Adventure, Snow lovers, Backpackers\n\n### Goa\nIndia’s sunshine state with a mix of Portuguese heritage, vibrant nightlife, serene beaches, and world-class seafood.\n• Must-see: Baga, Anjuna & Vagator party belt, Fontainhas Latin Quarter heritage walk\n• Food highlight: Gunpowder (Goan-meets-Andhra cuisine)\n• Best for: Nightlife, Beach bums, Foodies\n\n### Shimla\nColonial-era hill station known for toy trains, pine forests, and views of the lower Himalayas. Ideal for family holidays and vintage charm.\n• Must-see: The Ridge & Mall Road promenades, Jakhoo Temple (ropeway available)\n• Food highlight: Cafe Simla Times\n• Best for: Families, History lovers, Slow travel\n\nTell me which one feels exciting and I’ll plan the details for you.",
+      "context": {
+        "travelers": 2
+      },
+      "category": "general",
+      "keywords": [
+        "delhi"
+      ],
+      "sentiment": "neutral",
+      "responseTime": 1,
+      "rating": null,
+      "feedback": null
+    },
+    {
+      "id": "conv_1763123281262_h2odoe8gm",
+      "timestamp": "2025-11-14T12:28:01.262Z",
+      "userMessage": "Weather in Shimla right now?",
+      "aiResponse": "I couldn’t reach live APIs for \"Weather in Shimla right now?\", but here are curated Onedrly picks you can explore right now:\n\n### Shimla\nColonial-era hill station known for toy trains, pine forests, and views of the lower Himalayas. Ideal for family holidays and vintage charm.\n• Must-see: The Ridge & Mall Road promenades, Jakhoo Temple (ropeway available)\n• Food highlight: Cafe Simla Times\n• Best for: Families, History lovers, Slow travel\n\n### Manali\nA Himalayan hill town in Himachal Pradesh famed for snow-capped peaks, apple orchards, and adventure sports. Perfect for honeymooners, backpackers, and anyone chasing cool weather.\n• Must-see: Hadimba Devi Temple & ancient cedar forest, Solang Valley for paragliding, ATV rides, ziplining\n• Food highlight: Johnson’s Café (trout specialties)\n• Best for: Adventure, Snow lovers, Backpackers\n\n### Goa\nIndia’s sunshine state with a mix of Portuguese heritage, vibrant nightlife, serene beaches, and world-class seafood.\n• Must-see: Baga, Anjuna & Vagator party belt, Fontainhas Latin Quarter heritage walk\n• Food highlight: Gunpowder (Goan-meets-Andhra cuisine)\n• Best for: Nightlife, Beach bums, Foodies\n\nTell me which one feels exciting and I’ll plan the details for you.",
+      "context": {
+        "travelers": 2
+      },
+      "category": "weather",
+      "keywords": [
+        "weather",
+        "shimla",
+        "right"
+      ],
+      "sentiment": "neutral",
+      "responseTime": 0,
+      "rating": null,
+      "feedback": null
+    },
+    {
+      "id": "conv_1763123596987_37bn26o9r",
+      "timestamp": "2025-11-14T12:33:16.987Z",
+      "userMessage": "Create a 4-day immersive itinerary for Delhi",
+      "aiResponse": "I couldn’t reach live APIs for \"Create a 4-day immersive itinerary for Delhi\", but here are curated Onedrly picks you can explore right now:\n\n### Shimla\nColonial-era hill station known for toy trains, pine forests, and views of the lower Himalayas. Ideal for family holidays and vintage charm.\n• Must-see: The Ridge & Mall Road promenades, Jakhoo Temple (ropeway available)\n• Food highlight: Cafe Simla Times\n• Best for: Families, History lovers, Slow travel\n\n### Manali\nA Himalayan hill town in Himachal Pradesh famed for snow-capped peaks, apple orchards, and adventure sports. Perfect for honeymooners, backpackers, and anyone chasing cool weather.\n• Must-see: Hadimba Devi Temple & ancient cedar forest, Solang Valley for paragliding, ATV rides, ziplining\n• Food highlight: Johnson’s Café (trout specialties)\n• Best for: Adventure, Snow lovers, Backpackers\n\n### Goa\nIndia’s sunshine state with a mix of Portuguese heritage, vibrant nightlife, serene beaches, and world-class seafood.\n• Must-see: Baga, Anjuna & Vagator party belt, Fontainhas Latin Quarter heritage walk\n• Food highlight: Gunpowder (Goan-meets-Andhra cuisine)\n• Best for: Nightlife, Beach bums, Foodies\n\nTell me which one feels exciting and I’ll plan the details for you.",
+      "context": {
+        "destination": "Delhi",
+        "dates": {
+          "start": "2025-11-15",
+          "end": "2025-11-19"
+        },
+        "travelers": 2,
+        "interests": [
+          "Adventure",
+          "Food",
+          "Photography"
+        ]
+      },
+      "category": "planning",
+      "keywords": [
+        "create",
+        "4day",
+        "immersive",
+        "itinerary",
+        "delhi"
+      ],
+      "sentiment": "neutral",
+      "responseTime": 2,
+      "rating": null,
+      "feedback": null
+    },
+    {
+      "id": "conv_1763123617748_nm7ebqk87",
+      "timestamp": "2025-11-14T12:33:37.748Z",
+      "userMessage": "Estimate the budget for 2 traveler(s) visiting Delhi",
+      "aiResponse": "I couldn’t reach live APIs for \"Estimate the budget for 2 traveler(s) visiting Delhi\", but here are curated Onedrly picks you can explore right now:\n\n### Manali\nA Himalayan hill town in Himachal Pradesh famed for snow-capped peaks, apple orchards, and adventure sports. Perfect for honeymooners, backpackers, and anyone chasing cool weather.\n• Must-see: Hadimba Devi Temple & ancient cedar forest, Solang Valley for paragliding, ATV rides, ziplining\n• Food highlight: Johnson’s Café (trout specialties)\n• Best for: Adventure, Snow lovers, Backpackers\n\n### Shimla\nColonial-era hill station known for toy trains, pine forests, and views of the lower Himalayas. Ideal for family holidays and vintage charm.\n• Must-see: The Ridge & Mall Road promenades, Jakhoo Temple (ropeway available)\n• Food highlight: Cafe Simla Times\n• Best for: Families, History lovers, Slow travel\n\n### Goa\nIndia’s sunshine state with a mix of Portuguese heritage, vibrant nightlife, serene beaches, and world-class seafood.\n• Must-see: Baga, Anjuna & Vagator party belt, Fontainhas Latin Quarter heritage walk\n• Food highlight: Gunpowder (Goan-meets-Andhra cuisine)\n• Best for: Nightlife, Beach bums, Foodies\n\nTell me which one feels exciting and I’ll plan the details for you.",
+      "context": {
+        "destination": "Delhi",
+        "dates": {
+          "start": "2025-11-15",
+          "end": "2025-11-19"
+        },
+        "travelers": 2,
+        "interests": [
+          "Adventure",
+          "Food",
+          "Photography"
+        ]
+      },
+      "category": "budget",
+      "keywords": [
+        "estimate",
+        "budget",
+        "travelers",
+        "visiting",
+        "delhi"
+      ],
+      "sentiment": "neutral",
+      "responseTime": 2,
+      "rating": null,
+      "feedback": null
+    },
+    {
+      "id": "conv_1763123622333_fz970muvd",
+      "timestamp": "2025-11-14T12:33:42.333Z",
+      "userMessage": "Create a packing list for Delhi in 2025-11-15",
+      "aiResponse": "I couldn’t reach live APIs for \"Create a packing list for Delhi in 2025-11-15\", but here are curated Onedrly picks you can explore right now:\n\n### Manali\nA Himalayan hill town in Himachal Pradesh famed for snow-capped peaks, apple orchards, and adventure sports. Perfect for honeymooners, backpackers, and anyone chasing cool weather.\n• Must-see: Hadimba Devi Temple & ancient cedar forest, Solang Valley for paragliding, ATV rides, ziplining\n• Food highlight: Johnson’s Café (trout specialties)\n• Best for: Adventure, Snow lovers, Backpackers\n\n### Shimla\nColonial-era hill station known for toy trains, pine forests, and views of the lower Himalayas. Ideal for family holidays and vintage charm.\n• Must-see: The Ridge & Mall Road promenades, Jakhoo Temple (ropeway available)\n• Food highlight: Cafe Simla Times\n• Best for: Families, History lovers, Slow travel\n\n### Goa\nIndia’s sunshine state with a mix of Portuguese heritage, vibrant nightlife, serene beaches, and world-class seafood.\n• Must-see: Baga, Anjuna & Vagator party belt, Fontainhas Latin Quarter heritage walk\n• Food highlight: Gunpowder (Goan-meets-Andhra cuisine)\n• Best for: Nightlife, Beach bums, Foodies\n\nTell me which one feels exciting and I’ll plan the details for you.",
+      "context": {
+        "destination": "Delhi",
+        "dates": {
+          "start": "2025-11-15",
+          "end": "2025-11-19"
+        },
+        "travelers": 2,
+        "interests": [
+          "Adventure",
+          "Food",
+          "Photography"
+        ]
+      },
+      "category": "general",
+      "keywords": [
+        "create",
+        "packing",
+        "list",
+        "delhi",
+        "20251115"
+      ],
+      "sentiment": "neutral",
+      "responseTime": 1,
+      "rating": null,
+      "feedback": null
+    }
+  ]
+}

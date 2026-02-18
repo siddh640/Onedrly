@@ -1,0 +1,91 @@
+@if (isOpen()) {
+  <div class="modal-overlay" (click)="close()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+      <button class="close-btn" (click)="close()">×</button>
+
+      @if (!success()) {
+        <div class="modal-header">
+          <h2>Book Medical Appointment</h2>
+          @if (facility()) {
+            <p class="facility-name">{{ facility()?.name }}</p>
+            <p class="facility-address">{{ facility()?.address || facility()?.formattedAddress }}</p>
+          }
+        </div>
+
+        <form class="appointment-form" (submit)="$event.preventDefault(); bookAppointment();">
+          <div class="form-group">
+            <label>Patient Name *</label>
+            <input type="text" [(ngModel)]="patientName" name="patientName" required placeholder="Enter your full name">
+          </div>
+
+          <div class="form-group">
+            <label>Email *</label>
+            <input type="email" [(ngModel)]="patientEmail" name="patientEmail" required placeholder="your.email@example.com">
+          </div>
+
+          <div class="form-group">
+            <label>Phone Number *</label>
+            <input type="tel" [(ngModel)]="patientPhone" name="patientPhone" required placeholder="+91 1234567890">
+          </div>
+
+          <div class="form-row">
+            <div class="form-group">
+              <label>Appointment Date *</label>
+              <input type="date" [(ngModel)]="appointmentDate" name="appointmentDate" 
+                     [min]="getMinDate()" [max]="getMaxDate()" required>
+            </div>
+
+            <div class="form-group">
+              <label>Appointment Time *</label>
+              <input type="time" [(ngModel)]="appointmentTime" name="appointmentTime" required>
+            </div>
+          </div>
+
+          <div class="form-group">
+            <label>Reason for Visit</label>
+            <input type="text" [(ngModel)]="reason" name="reason" placeholder="e.g., General checkup, Consultation">
+          </div>
+
+          <div class="form-group">
+            <label>Additional Notes</label>
+            <textarea [(ngModel)]="notes" name="notes" rows="3" placeholder="Any additional information..."></textarea>
+          </div>
+
+          @if (errorMessage()) {
+            <div class="error-message">{{ errorMessage() }}</div>
+          }
+
+          <div class="form-actions">
+            <button type="button" class="btn-secondary" (click)="close()">Cancel</button>
+            <button type="submit" class="btn-primary" [disabled]="loading()">
+              {{ loading() ? 'Booking...' : 'Book Appointment' }}
+            </button>
+          </div>
+        </form>
+      }
+
+      @if (success() && appointmentDetails()) {
+        <div class="success-content">
+          <div class="success-icon">✓</div>
+          <h2>Appointment Confirmed!</h2>
+          <div class="appointment-info">
+            <p><strong>Reference:</strong> {{ appointmentDetails()?.appointment?.appointmentId }}</p>
+            <p><strong>Facility:</strong> {{ appointmentDetails()?.appointment?.facilityName }}</p>
+            <p><strong>Date:</strong> {{ appointmentDetails()?.appointment?.appointmentDate }}</p>
+            <p><strong>Time:</strong> {{ appointmentDetails()?.appointment?.appointmentTime }}</p>
+          </div>
+          <div class="confirmation-message">
+            <p>{{ appointmentDetails()?.confirmation?.message }}</p>
+            <ul class="next-steps">
+              @for (step of appointmentDetails()?.confirmation?.nextSteps; track step) {
+                <li>{{ step }}</li>
+              }
+            </ul>
+          </div>
+          <button class="btn-primary" (click)="close()">Close</button>
+        </div>
+      }
+    </div>
+  </div>
+}
+

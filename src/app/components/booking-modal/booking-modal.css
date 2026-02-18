@@ -64,6 +64,54 @@
   text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
 }
 
+.auth-banner {
+  margin: 24px 32px 0;
+  background: linear-gradient(120deg, rgba(102, 126, 234, 0.12), rgba(118, 75, 162, 0.1));
+  border-radius: 18px;
+  padding: 16px 24px;
+  display: flex;
+  gap: 1rem;
+  align-items: center;
+  justify-content: space-between;
+  flex-wrap: wrap;
+  border: 1px solid rgba(102, 126, 234, 0.2);
+}
+
+.auth-banner h3 {
+  margin: 0 0 4px;
+  color: #1f2937;
+}
+
+.auth-banner p {
+  margin: 0;
+  color: #4b5563;
+}
+
+.auth-actions {
+  display: flex;
+  gap: 0.75rem;
+  flex-wrap: wrap;
+}
+
+.auth-actions button {
+  border: none;
+  border-radius: 999px;
+  padding: 0.6rem 1.2rem;
+  cursor: pointer;
+  font-weight: 600;
+}
+
+.auth-actions .login-action {
+  background: linear-gradient(135deg, #667eea, #764ba2);
+  color: #fff;
+}
+
+.auth-actions .signup-action {
+  background: #fff;
+  color: #4b5563;
+  border: 1px solid rgba(102, 126, 234, 0.4);
+}
+
 .close-btn {
   background: rgba(255, 255, 255, 0.2);
   border: none;

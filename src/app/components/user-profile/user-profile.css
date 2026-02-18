@@ -103,6 +103,12 @@
   font-size: 1rem;
 }
 
+.user-meta {
+  margin: 0.25rem 0 0;
+  color: #888;
+  font-size: 0.9rem;
+}
+
 .profile-stats {
   display: grid;
   grid-template-columns: 1fr 1fr;
@@ -146,6 +152,154 @@
 .stat-info p {
   color: #666;
   margin: 0;
+  font-size: 0.9rem;
+}
+
+.preferences-card {
+  background: #fdfdfd;
+  border-radius: 15px;
+  padding: 1.5rem;
+  text-align: left;
+  margin-bottom: 2rem;
+  border: 1px solid #f0f0f0;
+}
+
+.preferences-card h3 {
+  margin: 0 0 1rem 0;
+  color: #333;
+}
+
+.preferences-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(140px, 1fr));
+  gap: 1rem;
+}
+
+.preferences-grid .label {
+  display: block;
+  font-size: 0.85rem;
+  color: #777;
+}
+
+.preferences-grid .value {
+  font-weight: 600;
+  color: #333;
+}
+
+.recent-bookings {
+  text-align: left;
+  margin-bottom: 2rem;
+}
+
+.recent-bookings h3 {
+  margin-bottom: 1rem;
+  color: #333;
+}
+
+.booking-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.booking-item {
+  padding: 1rem;
+  border-radius: 12px;
+  background: #f8f9fa;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+}
+
+.booking-type {
+  margin: 0;
+  font-weight: 600;
+  color: #333;
+}
+
+.booking-destination {
+  margin: 0;
+  color: #666;
+  font-size: 0.9rem;
+}
+
+.booking-meta {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 0.3rem;
+}
+
+.booking-status {
+  font-size: 0.85rem;
+  font-weight: 600;
+  color: #805ad5;
+}
+
+.booking-amount {
+  font-weight: 700;
+  color: #333;
+}
+
+.favorites-card,
+.search-history-card {
+  background: #fdfdfd;
+  border-radius: 15px;
+  padding: 1.5rem;
+  text-align: left;
+  border: 1px solid #f0f0f0;
+  margin-bottom: 1.5rem;
+}
+
+.favorites-card h3,
+.search-history-card h3 {
+  margin: 0 0 1rem 0;
+  color: #333;
+}
+
+.favorite-list,
+.search-history-list {
+  display: flex;
+  flex-direction: column;
+  gap: 0.75rem;
+}
+
+.favorite-item,
+.search-history-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #f8f9fa;
+  border-radius: 12px;
+  padding: 1rem;
+  gap: 1rem;
+}
+
+.favorite-name,
+.search-destination {
+  margin: 0;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+.favorite-meta,
+.search-type {
+  margin: 0.15rem 0 0;
+  color: #6b7280;
+  font-size: 0.85rem;
+}
+
+.favorite-status,
+.search-date {
+  font-size: 0.85rem;
+  color: #6b7280;
+  font-weight: 600;
+}
+
+.empty-text {
+  margin: 0;
+  color: #9ca3af;
   font-size: 0.9rem;
 }
 
@@ -203,5 +357,14 @@
 
   .profile-stats {
     grid-template-columns: 1fr;
+  }
+
+  .booking-item {
+    flex-direction: column;
+    align-items: flex-start;
+  }
+
+  .booking-meta {
+    align-items: flex-start;
   }
 }

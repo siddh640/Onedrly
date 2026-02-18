@@ -1,0 +1,259 @@
+{
+  "Manali": {
+    "summary": "A Himalayan hill town in Himachal Pradesh famed for snow-capped peaks, apple orchards, and adventure sports. Perfect for honeymooners, backpackers, and anyone chasing cool weather.",
+    "weather": "Cold alpine climate; snowfall from December to February, pleasant 10-20°C summers.",
+    "idealVisit": "October to February for snow, March to June for clear skies and paragliding.",
+    "attractions": [
+      "Hadimba Devi Temple & ancient cedar forest",
+      "Solang Valley for paragliding, ATV rides, ziplining",
+      "Rohtang Pass (need permit; closed in heavy snow)",
+      "Old Manali cafés and nightlife",
+      "Jogini & Rahala waterfalls"
+    ],
+    "restaurants": [
+      "Johnson’s Café (trout specialties)",
+      "Café 1947 (river-view Italian)",
+      "Chopsticks Restaurant (Tibetan platters)",
+      "Drifter’s Café (live music)",
+      "The Lazy Dog"
+    ],
+    "activities": [
+      "Skiing & snowboarding lessons in Solang",
+      "River rafting on the Beas",
+      "Trek to Bhrigu Lake or Beas Kund",
+      "Hot spring dip at Vashisht",
+      "Mountain biking & ziplines"
+    ],
+    "hotels": {
+      "budget": ["Zostel Manali", "Backpacker Panda Manali", "The Hosteller"],
+      "midRange": ["Johnson Lodge & Spa", "Snow Valley Resorts"],
+      "luxury": ["Span Resort & Spa", "Larisa Resort", "The Himalayan"]
+    },
+    "travelTips": [
+      "Carry permits + photo ID for Rohtang/Atal Tunnel drives.",
+      "Roads can be slippery—book AWD cabs in winter.",
+      "Power backup matters; confirm with your hotel.",
+      "Altitude sickness is mild but stay hydrated."
+    ],
+    "bestFor": ["Adventure", "Snow lovers", "Backpackers", "Honeymooners"],
+    "followUpQuestions": [
+      "Plan a 4-day snow itinerary in Manali",
+      "Compare Solang Valley vs Rohtang Pass activities",
+      "Suggest cafés with live music in Old Manali"
+    ],
+    "keywords": ["manali", "solang", "himachal", "snow", "rohtang", "paragliding"]
+  },
+  "Goa": {
+    "summary": "India’s sunshine state with a mix of Portuguese heritage, vibrant nightlife, serene beaches, and world-class seafood.",
+    "weather": "Tropical and humid; 25-33°C year-round. Monsoon bursts from June to September.",
+    "idealVisit": "November to February for beach weather and festivals; June-August for lush monsoon getaways.",
+    "attractions": [
+      "Baga, Anjuna & Vagator party belt",
+      "Fontainhas Latin Quarter heritage walk",
+      "Chapora & Aguada forts for sunsets",
+      "South Goa beaches: Palolem, Colva, Benaulim",
+      "Spice plantations & Dudhsagar Falls day trips"
+    ],
+    "restaurants": [
+      "Gunpowder (Goan-meets-Andhra cuisine)",
+      "Mum’s Kitchen (heritage recipes)",
+      "Vinayak Family Restaurant (seafood thali)",
+      "Vinyl Discotheque cafés in Anjuna",
+      "Thalassa (Greek sundowners)"
+    ],
+    "activities": [
+      "Sunset cruises on Mandovi",
+      "Scuba & snorkeling at Grande Island",
+      "Beach shack hopping + silent discos",
+      "E-bike tours in Divar Island",
+      "Spice plantation lunches"
+    ],
+    "hotels": {
+      "budget": ["Woke Hostel Morjim", "Bunkker Colva", "Youth Hostel Panjim"],
+      "midRange": ["Santana Beach Resort", "Taj Cidade de Goa Horizon", "Marbella Beach Resort"],
+      "luxury": ["W Goa", "Taj Exotica", "Alila Diwa", "Ahilya by the Sea"]
+    },
+    "travelTips": [
+      "North = nightlife, South = slow luxury.",
+      "Self-drive scooters cost ₹400-600/day; carry license + helmet.",
+      "Most beaches have safe-swim flags—respect red flags during monsoon.",
+      "Book clubs & restaurant tables ahead for December high season."
+    ],
+    "bestFor": ["Nightlife", "Beach bums", "Foodies", "Digital nomads"],
+    "followUpQuestions": [
+      "Design a 5-day Goa plan split between North and South beaches",
+      "List boutique stays with private plunge pools",
+      "Where to try the best Goan seafood thalis?"
+    ],
+    "keywords": ["goa", "beach", "party", "baga", "seafood", "nightlife"]
+  },
+  "Shimla": {
+    "summary": "Colonial-era hill station known for toy trains, pine forests, and views of the lower Himalayas. Ideal for family holidays and vintage charm.",
+    "weather": "Cool summers (15-25°C), chilly winters with occasional snow.",
+    "idealVisit": "March to June for crisp weather, December-January for snowfall.",
+    "attractions": [
+      "The Ridge & Mall Road promenades",
+      "Jakhoo Temple (ropeway available)",
+      "Kalka-Shimla UNESCO toy train ride",
+      "Viceregal Lodge & Indian Institute of Advanced Study",
+      "Mashobra + Kufri day trips"
+    ],
+    "restaurants": [
+      "Cafe Simla Times",
+      "Wake & Bake Café",
+      "Eighteen71 Cookhouse",
+      "Ashiana & Goofa for Himachali cuisine"
+    ],
+    "activities": [
+      "Toy train photography tour",
+      "Forest hikes in Mashobra",
+      "Ziplining & fun park rides at Kufri",
+      "Walking heritage tour with local guides"
+    ],
+    "hotels": {
+      "budget": ["The Hosteller Shimla", "Hotel Silverine"],
+      "midRange": ["The Oberoi Cecil (heritage mid-lux)", "Radisson Jass"],
+      "luxury": ["Wildflower Hall", "Taj Theog Resort & Spa"]
+    },
+    "travelTips": [
+      "Mall Road is pedestrian-only; book hotels with lift access if traveling with seniors.",
+      "Carry warm layers even in summer evenings.",
+      "Plan Kufri/Mashobra visits early morning to avoid traffic.",
+      "Toy train tickets sell out—book IRCTC in advance."
+    ],
+    "bestFor": ["Families", "History lovers", "Slow travel"],
+    "followUpQuestions": [
+      "Suggest a weekend itinerary for Shimla + Kufri",
+      "Best colonial-era stays with valley views",
+      "What to pack for Shimla in December?"
+    ],
+    "keywords": ["shimla", "ridge", "mall road", "toy train", "kufri"]
+  },
+  "Jaipur": {
+    "summary": "Rajasthan’s Pink City packed with royal forts, flamboyant palaces, textiles, and gourmet Rajasthani cuisine.",
+    "weather": "Hot summers up to 40°C, pleasant 15-25°C winters, brief monsoon showers.",
+    "idealVisit": "October to March for festivals and outdoor sightseeing.",
+    "attractions": [
+      "Amber Fort & evening light show",
+      "Hawa Mahal sunrise",
+      "City Palace & Pritam Niwas Chowk",
+      "Jantar Mantar observatory",
+      "Patrika Gate & Jawahar Circle",
+      "Stepwells like Panna Meena ka Kund"
+    ],
+    "restaurants": [
+      "Suvarna Mahal at Rambagh Palace",
+      "Tapri Central (chai + snacks)",
+      "Bar Palladio",
+      "Laxmi Mishthan Bhandar (ghewar, kachori)"
+    ],
+    "activities": [
+      "Hot air balloon sunrise rides",
+      "Block-print workshops in Sanganer",
+      "Shopping at Johri & Bapu Bazaar",
+      "Elephant sanctuaries (ethical visits only)"
+    ],
+    "hotels": {
+      "budget": ["Moustache Hostel Jaipur", "Zostel Jaipur"],
+      "midRange": ["Alsisar Haveli", "Shahpura House"],
+      "luxury": ["Rambagh Palace", "Fairmont Jaipur", "The Leela Palace"]
+    },
+    "travelTips": [
+      "Buy composite city tickets for forts to skip queues.",
+      "Start early to beat heat + crowds in Amber.",
+      "Dress modestly for temples; carry cash for bazaars.",
+      "Use official guides or audio tours to avoid touts."
+    ],
+    "bestFor": ["Culture", "Architecture", "Shopping"],
+    "followUpQuestions": [
+      "Plan a 3-day Jaipur cultural circuit",
+      "Where to learn block printing hands-on?",
+      "Best rooftop dining with Hawa Mahal views"
+    ],
+    "keywords": ["jaipur", "amber fort", "rajasthan", "pink city", "hawa mahal"]
+  },
+  "Kerala Backwaters": {
+    "summary": "A tropical paradise of coconut groves, emerald canals, Ayurveda retreats, and slow houseboat cruises stretching from Alleppey to Kumarakom.",
+    "weather": "Warm and humid; 24-32°C with two monsoons (June & October).",
+    "idealVisit": "November to February for breezy evenings; monsoon for Ayurvedic treatments.",
+    "attractions": [
+      "Alleppey–Kumarakom houseboat circuit",
+      "Vembanad Lake bird sanctuaries",
+      "Marari & Cherai beaches nearby",
+      "Kuttanad rice bowl villages",
+      "Nehru Trophy snake boat regatta (August)"
+    ],
+    "restaurants": [
+      "Thaff Delicacy for Syrian Christian meals",
+      "Vembanad Restaurant (The Zuri)",
+      "Local toddy shops for karimeen pollichathu"
+    ],
+    "activities": [
+      "Overnight deluxe houseboats",
+      "Village cycling tours",
+      "Traditional canoe rides at sunset",
+      "Ayurveda massages + yoga retreats"
+    ],
+    "hotels": {
+      "budget": ["Zostel Alleppey", "Cosy Houseboats"],
+      "midRange": ["Lakesong Kumarakom", "Lemon Tree Vembanad Retreat"],
+      "luxury": ["Kumarakom Lake Resort", "The Zuri Kumarakom", "Aveda Resorts"]
+    },
+    "travelTips": [
+      "Confirm AC usage hours on houseboats.",
+      "Carry mosquito repellent + light cotton clothing.",
+      "Support eco-operators—check waste disposal practices.",
+      "Combine with Munnar/Thekkady for hills + wildlife."
+    ],
+    "bestFor": ["Relaxation", "Honeymoons", "Wellness"],
+    "followUpQuestions": [
+      "Design a 4-day Alleppey + Munnar combo",
+      "Best Ayurveda retreats on the backwaters",
+      "Houseboat safety checklist"
+    ],
+    "keywords": ["kerala", "backwaters", "alleppey", "houseboat", "kumarakom"]
+  },
+  "Andaman Islands": {
+    "summary": "Turquoise waters, coral reefs, and white-sand beaches ideal for diving, honeymooning, and remote workcations.",
+    "weather": "Tropical maritime climate; 24-32°C. Avoid peak monsoon (June-August).",
+    "idealVisit": "November to April for underwater visibility and calm seas.",
+    "attractions": [
+      "Radhanagar Beach & Kalapathar in Havelock",
+      "Scuba/snorkel at Neil Island’s Bharatpur reef",
+      "Cellular Jail light & sound show",
+      "Bioluminescence kayaking tours",
+      "Ross Island heritage ruins"
+    ],
+    "restaurants": [
+      "Anju Coco (Havelock)",
+      "Something Different – A Beachside Café",
+      "SeaShell Coral Cove",
+      "Bonova Café"
+    ],
+    "activities": [
+      "PADI-certified dives (Havelock/Neil)",
+      "Sea walking at North Bay",
+      "Glass-bottom boat rides",
+      "Kayaking + night mangrove tours"
+    ],
+    "hotels": {
+      "budget": ["Blue Bird Resort", "Coconut Grove Eco Hut"],
+      "midRange": ["SeaShell Havelock", "Symphony Palms"],
+      "luxury": ["Taj Exotica Resort & Spa", "Barefoot at Havelock"]
+    },
+    "travelTips": [
+      "Carry physical copies of flights + permits; connectivity is patchy.",
+      "Most islands are single-use plastic free—pack reusable bottles.",
+      "Inter-island ferries sell out; pre-book Govt/Green Ocean ferries.",
+      "Respect coral reefs—reef-safe sunscreen only."
+    ],
+    "bestFor": ["Diving", "Beach honeymoons", "Digital detox"],
+    "followUpQuestions": [
+      "Plan a 6-day Port Blair–Havelock–Neil itinerary",
+      "Where to learn scuba diving for beginners?",
+      "Top eco-friendly stays in Andaman"
+    ],
+    "keywords": ["andaman", "havelock", "radhanagar", "scuba", "neil island"]
+  }
+}
+

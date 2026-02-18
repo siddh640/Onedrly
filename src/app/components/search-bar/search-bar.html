@@ -1,16 +1,112 @@
-<div class="search-container">
-  <div class="search-wrapper">
-    <div class="search-icon">🔍</div>
-    <input 
-      type="text" 
-      class="search-input" 
-      [(ngModel)]="destination"
-      (keypress)="handleKeyPress($event)"
-      placeholder="Enter your destination (e.g., Paris, Tokyo, New York...)"
-      autocomplete="off"
-    />
-    <button class="search-button" (click)="search()">
-      Search
-    </button>
+<div class="search-section">
+  <div class="search-container-glass glass-strong rounded-2xl sm:rounded-3xl shadow-2xl p-4 sm:p-6 lg:p-8 hover-lift animate-fadeInUp">
+    <!-- Search Type Tabs -->
+    <div class="search-tabs">
+      <button 
+        class="search-tab"
+        [class.active]="searchType() === 'destination'"
+        (click)="setSearchType('destination')">
+        <span>📍</span>
+        <span>Places</span>
+      </button>
+      <button 
+        class="search-tab"
+        [class.active]="searchType() === 'flights'"
+        (click)="setSearchType('flights')">
+        <span>✈️</span>
+        <span>Flights</span>
+      </button>
+      <button 
+        class="search-tab"
+        [class.active]="searchType() === 'hotels'"
+        (click)="setSearchType('hotels')">
+        <span>🏨</span>
+        <span>Hotels</span>
+      </button>
+      <button 
+        class="search-tab"
+        [class.active]="searchType() === 'trains'"
+        (click)="setSearchType('trains')">
+        <span>🚂</span>
+        <span>Trains</span>
+      </button>
+      <button 
+        class="search-tab"
+        [class.active]="searchType() === 'buses'"
+        (click)="setSearchType('buses')">
+        <span>🚌</span>
+        <span>Buses</span>
+      </button>
+    </div>
+
+    <!-- Search Form -->
+    @if (searchType() === 'destination') {
+      <div class="search-wrapper-simple">
+        <div class="search-icon">🔍</div>
+        <input 
+          type="text" 
+          class="search-input" 
+          [(ngModel)]="destination"
+          (keypress)="handleKeyPress($event)"
+          placeholder="Enter your destination (e.g., Paris, Tokyo, New York...)"
+          autocomplete="off"
+        />
+        <button class="search-button" (click)="search()">
+          Search
+        </button>
+      </div>
+    } @else {
+      <div class="search-form-grid">
+        <div class="search-input-wrapper">
+          <span class="input-icon">📍</span>
+          <input 
+            type="text" 
+            class="search-input-field glass-soft"
+            [(ngModel)]="origin"
+            placeholder="From"
+          />
+        </div>
+        <div class="search-input-wrapper">
+          <span class="input-icon">📍</span>
+          <input 
+            type="text" 
+            class="search-input-field glass-soft"
+            [(ngModel)]="destination"
+            placeholder="To"
+          />
+        </div>
+        <div class="search-input-wrapper">
+          <span class="input-icon">📅</span>
+          <input 
+            type="date" 
+            class="search-input-field glass-soft"
+            [(ngModel)]="departureDate"
+            placeholder="Departure"
+          />
+        </div>
+        <div class="search-input-wrapper">
+          <span class="input-icon">📅</span>
+          <input 
+            type="date" 
+            class="search-input-field glass-soft"
+            [(ngModel)]="returnDate"
+            placeholder="Return"
+          />
+        </div>
+        <div class="search-input-wrapper">
+          <span class="input-icon">👥</span>
+          <input 
+            type="number" 
+            class="search-input-field glass-soft"
+            [(ngModel)]="guests"
+            placeholder="1"
+            min="1"
+          />
+        </div>
+        <button class="search-button-main glow-effect" (click)="search()">
+          <span class="search-icon-btn">🔍</span>
+        </button>
+      </div>
+    }
   </div>
 </div>

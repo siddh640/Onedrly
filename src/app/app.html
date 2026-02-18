@@ -1,78 +1,275 @@
-@if (!isAuthPage()) {
-<div class="app-container"> 
-  <!-- Navigation Header -->
-  <nav class="nav-header">
-    <div class="nav-content">
-      <div class="nav-brand">
-        <h1 class="brand-title">
-          <span class="title-gradient"><span class="thin-letter">O</span>∩<span class="thin-letter">e</span><span class="cursive-text">drly</span></span>
-        </h1>
-      </div>
-      <div class="nav-actions">
-        @if (currentUser()) {
-          <div class="user-menu">
-            <button class="user-btn" (click)="goToProfile()">
+@if (!isAuthPage() && !isAiPage()) {
+<div class="app-container">
+  <!-- Animated Background Gradient -->
+  <div class="fixed inset-0 bg-gradient-to-br from-[#f8f9ff] via-white to-[#fff5f7] opacity-90 animated-bg"></div>
+  
+  <!-- Floating Orbs -->
+  <div class="fixed inset-0 overflow-hidden pointer-events-none">
+    <div class="absolute top-20 left-10 w-72 h-72 bg-[#7877c6] rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-float3D"></div>
+    <div class="absolute top-40 right-10 w-96 h-96 bg-[#ff6e7f] rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-float" style="animation-delay: 2s;"></div>
+    <div class="absolute bottom-20 left-1/3 w-80 h-80 bg-[#52b69a] rounded-full mix-blend-multiply filter blur-3xl opacity-20 animate-float3D" style="animation-delay: 4s;"></div>
+  </div>
+
+  <div class="relative z-10">
+    <!-- Navigation Header - Fixed with Glass Morphism -->
+    <nav class="nav-header-fixed">
+      <div class="nav-content">
+        <button class="nav-brand" (click)="goToHome()">
+          <span class="brand-title text-gradient">Onedrly</span>
+        </button>
+        
+        <!-- Navigation Links - Hidden on mobile -->
+        <div class="nav-links">
+          <button class="nav-link" (click)="goToHome()" [class.active]="currentPage() === 'home'">
+            <span>🔍</span>
+            <span class="nav-link-text">Explore</span>
+          </button>
+          <button class="nav-link" (click)="goToOnedrlyAi()" [class.active]="currentPage() === 'ai'">
+            <span>💬</span>
+            <span class="nav-link-text">AI Chat</span>
+          </button>
+          <button class="nav-link" (click)="goToWeather()" [class.active]="currentPage() === 'weather'">
+            <span>☁️</span>
+            <span class="nav-link-text">Weather</span>
+          </button>
+          @if (currentUser()) {
+            <button class="nav-link" (click)="goToBookings()" [class.active]="currentPage() === 'bookings'">
+              <span>📅</span>
+              <span class="nav-link-text">My Trips</span>
+            </button>
+            <button class="nav-link" (click)="goToTripPlanner()" [class.active]="currentPage() === 'planner'">
+              <span>🗺️</span>
+              <span class="nav-link-text">Planner</span>
+            </button>
+          }
+        </div>
+
+        <!-- Auth Buttons -->
+        <div class="nav-actions">
+          @if (currentUser()) {
+            <button class="profile-btn" (click)="goToProfile()">
               <span class="user-avatar">{{ currentUser()?.name?.charAt(0)?.toUpperCase() }}</span>
-              <span class="user-name">{{ currentUser()?.name }}</span>
+              <span class="user-name">Profile</span>
             </button>
-            <button class="logout-btn" (click)="logout()">
-              Sign Out
-            </button>
+          } @else {
+            <button class="login-btn-nav" (click)="goToLogin()">Login</button>
+            <button class="register-btn-nav" (click)="goToRegister()">Sign Up</button>
+          }
+        </div>
+      </div>
+    </nav>
+
+    <main class="w-full">
+      @if (!searched()) {
+        <!-- Enhanced Hero Section -->
+        <section class="hero-section-enhanced">
+          <!-- Enhanced 3D Globe Background -->
+          <div class="hero-globe-bg">
+            <div class="globe-orb animate-float3D"></div>
           </div>
-        } @else {
-          <div class="auth-buttons">
-            <button class="login-btn" (click)="goToLogin()">
-              Sign In
-            </button>
-            <button class="register-btn" (click)="goToRegister()">
-              Sign Up
-            </button>
+
+          <div class="hero-content-enhanced">
+            <div class="ai-badge animate-scaleIn">
+              <span class="badge-icon">✨</span>
+              <span class="badge-text">AI-Powered Travel Platform</span>
+            </div>
+            
+            <h1 class="hero-title-enhanced text-gradient">
+              Discover Your Next Adventure
+            </h1>
+            
+            <p class="hero-subtitle-enhanced">
+              Search flights, hotels, trains & more across 40+ cities worldwide. 
+              Get AI-powered recommendations and the best prices guaranteed.
+            </p>
+
+            <!-- Enhanced Features -->
+            <div class="hero-features">
+              <div class="feature-item">
+                <span class="feature-icon">📈</span>
+                <span class="feature-text">Price Predictions</span>
+              </div>
+              <div class="feature-item">
+                <span class="feature-icon">🛡️</span>
+                <span class="feature-text">Best Price</span>
+              </div>
+              <div class="feature-item">
+                <span class="feature-icon">🏆</span>
+                <span class="feature-text">AI Recommendations</span>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Enhanced Search Bar Section -->
+        <section class="search-section-enhanced">
+          <app-search-bar (onSearch)="handleSearch($event)"></app-search-bar>
+        </section>
+
+        <!-- Popular Destinations -->
+        <section class="popular-destinations">
+          <div class="section-header">
+            <h2 class="section-title">Popular Destinations</h2>
+            <p class="section-subtitle">Explore trending destinations with exclusive deals</p>
+          </div>
+
+          <div class="destinations-grid">
+            <div class="destination-card card-3d hover-lift animate-fadeInUp" (click)="handleSearch('Paris')">
+              <div class="destination-image">
+                <img src="https://images.unsplash.com/photo-1502602898657-3e91760cbb34?w=800&q=80" alt="Paris">
+                <div class="destination-overlay"></div>
+                <div class="destination-tag">Popular</div>
+              </div>
+              <div class="destination-content">
+                <h3 class="destination-name">Paris</h3>
+                <p class="destination-country">France</p>
+                <div class="destination-footer">
+                  <span class="destination-price">from $899</span>
+                  <button class="destination-btn">Explore</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="destination-card card-3d hover-lift animate-fadeInUp" (click)="handleSearch('Tokyo')">
+              <div class="destination-image">
+                <img src="https://images.unsplash.com/photo-1540959733332-eab4deabeeaf?w=800&q=80" alt="Tokyo">
+                <div class="destination-overlay"></div>
+                <div class="destination-tag">Trending</div>
+              </div>
+              <div class="destination-content">
+                <h3 class="destination-name">Tokyo</h3>
+                <p class="destination-country">Japan</p>
+                <div class="destination-footer">
+                  <span class="destination-price">from $1,299</span>
+                  <button class="destination-btn">Explore</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="destination-card card-3d hover-lift animate-fadeInUp" (click)="handleSearch('Dubai')">
+              <div class="destination-image">
+                <img src="https://images.unsplash.com/photo-1512453979798-5ea266f8880c?w=800&q=80" alt="Dubai">
+                <div class="destination-overlay"></div>
+                <div class="destination-tag">Hot Deal</div>
+              </div>
+              <div class="destination-content">
+                <h3 class="destination-name">Dubai</h3>
+                <p class="destination-country">UAE</p>
+                <div class="destination-footer">
+                  <span class="destination-price">from $749</span>
+                  <button class="destination-btn">Explore</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="destination-card card-3d hover-lift animate-fadeInUp" (click)="handleSearch('New York')">
+              <div class="destination-image">
+                <img src="https://images.unsplash.com/photo-1496442226666-8d4d0e62e6e9?w=800&q=80" alt="New York">
+                <div class="destination-overlay"></div>
+                <div class="destination-tag">Popular</div>
+              </div>
+              <div class="destination-content">
+                <h3 class="destination-name">New York</h3>
+                <p class="destination-country">USA</p>
+                <div class="destination-footer">
+                  <span class="destination-price">from $1,099</span>
+                  <button class="destination-btn">Explore</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="destination-card card-3d hover-lift animate-fadeInUp" (click)="handleSearch('London')">
+              <div class="destination-image">
+                <img src="https://images.unsplash.com/photo-1513635269975-59663e0ac1ad?w=800&q=80" alt="London">
+                <div class="destination-overlay"></div>
+                <div class="destination-tag">Trending</div>
+              </div>
+              <div class="destination-content">
+                <h3 class="destination-name">London</h3>
+                <p class="destination-country">UK</p>
+                <div class="destination-footer">
+                  <span class="destination-price">from $849</span>
+                  <button class="destination-btn">Explore</button>
+                </div>
+              </div>
+            </div>
+
+            <div class="destination-card card-3d hover-lift animate-fadeInUp" (click)="handleSearch('Bali')">
+              <div class="destination-image">
+                <img src="https://images.unsplash.com/photo-1537996194471-e657df975ab4?w=800&q=80" alt="Bali">
+                <div class="destination-overlay"></div>
+                <div class="destination-tag">Best Value</div>
+              </div>
+              <div class="destination-content">
+                <h3 class="destination-name">Bali</h3>
+                <p class="destination-country">Indonesia</p>
+                <div class="destination-footer">
+                  <span class="destination-price">from $699</span>
+                  <button class="destination-btn">Explore</button>
+                </div>
+              </div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Why Choose Us -->
+        <section class="why-choose-us">
+          <div class="section-header">
+            <h2 class="section-title">Why Choose Onedrly?</h2>
+          </div>
+
+          <div class="why-grid">
+            <div class="why-card glass hover-lift card-3d animate-fadeInUp">
+              <div class="why-icon gradient-purple">
+                <span>✨</span>
+              </div>
+              <h3 class="why-title">Multi-Source Search</h3>
+              <p class="why-description">We search 3-4 APIs simultaneously to find you the best prices across all platforms</p>
+            </div>
+            <div class="why-card glass hover-lift card-3d animate-fadeInUp">
+              <div class="why-icon gradient-coral">
+                <span>✨</span>
+              </div>
+              <h3 class="why-title">AI-Powered Insights</h3>
+              <p class="why-description">Get price predictions, booking recommendations, and personalized travel advice</p>
+            </div>
+            <div class="why-card glass hover-lift card-3d animate-fadeInUp">
+              <div class="why-icon gradient-teal">
+                <span>✨</span>
+              </div>
+              <h3 class="why-title">Best Price Guarantee</h3>
+              <p class="why-description">Find the cheapest flights, hotels, and transport options with our smart algorithms</p>
+            </div>
+          </div>
+        </section>
+      }
+
+      <!-- Main Content Area -->
+      <main class="main-content">
+        <!-- Results Section -->
+        @if (searched()) {
+          <app-results 
+            [destinationData]="destinationData()" 
+            [weatherData]="weatherData()"
+            [loading]="loading()">
+          </app-results>
+
+          <div class="ai-grid">
+            <app-trip-planner [defaultDestination]="activeDestination()"></app-trip-planner>
+            <app-emergency-widget [destination]="activeDestination()"></app-emergency-widget>
           </div>
         }
-      </div>
-    </div>
-  </nav>
-
-  <!-- Hero Section -->
-  @if (!searched()) {
-    <header class="hero-section">
-      <div class="hero-content">
-        <h1 class="hero-title">
-          <span class="title-gradient"><span class="thin-letter">O</span>∩<span class="thin-letter">e</span><span class="cursive-text">drly</span></span>
-        </h1>
-        <p class="hero-subtitle">Discover Your Next Adventure</p>
-        <p class="hero-description">
-          Find amazing tourist attractions, delicious restaurants, and great shopping destinations all in one place
-        </p>
-      </div>
-    </header>
-  }
-
-  <!-- Search Bar -->
-  <app-search-bar (onSearch)="handleSearch($event)"></app-search-bar>
-
-  <!-- Main Content Area -->
-  <main class="main-content">
-    <!-- Results Section -->
-    @if (searched()) {
-      <app-results 
-        [destinationData]="destinationData()" 
-        [weatherData]="weatherData()"
-        [loading]="loading()">
-      </app-results>
-    }
-    
-    <!-- Router outlet for detail pages -->
-    <router-outlet />
-  </main>
-
-  <!-- Footer -->
-  @if (!loading() && !searched()) {
-    <footer class="footer">
-      <p class="footer-text">✈️ Start exploring by searching for any destination</p>
-    </footer>
-  }
+        
+        <!-- Router outlet for detail pages -->
+        <router-outlet />
+      </main>
+    </main>
+  </div>
 </div>
+}
+
+@if (isAiPage()) {
+<router-outlet />
 }
 
 <!-- Auth Pages (Login/Register) -->

@@ -1,15 +1,15 @@
 import { Injectable } from '@angular/core';
-import { BehaviorSubject, Observable } from 'rxjs';
+import { BehaviorSubject, Observable, of } from 'rxjs';
+import { catchError, map, tap } from 'rxjs/operators';
+import { HttpClient } from '@angular/common/http';
+import { environment } from '../../environments/environment';
+import {
+  AuthenticatedUser,
+  UserPreferences,
+  UserProfileDetails
+} from '../models/user.model';
 
-export interface User {
-  id: string;
-  email: string;
-  name: string;
-  preferences: {
-    favoriteDestinations: string[];
-    preferredCategories: string[];
-  };
-}
+export type User = AuthenticatedUser;
 
 export interface LoginCredentials {
   email: string;
@@ -23,119 +23,165 @@ export interface RegisterCredentials {
   confirmPassword: string;
 }
 
+interface ApiResponse<T> {
+  success: boolean;
+  message?: string;
+  data?: T;
+}
+
+interface AuthPayload {
+  user: BackendUser;
+  token: string;
+}
+
+interface BackendUser {
+  _id?: string;
+  id?: string;
+  email: string;
+  profile?: Partial<UserProfileDetails>;
+  preferences?: Partial<UserPreferences>;
+  name?: string;
+}
+
 @Injectable({
   providedIn: 'root'
 })
 export class AuthService {
+  private readonly AUTH_API = `${environment.backendUrl}/auth`;
+  private readonly USER_API = `${environment.backendUrl}/users`;
+  private readonly TOKEN_KEY = 'onedrly_token';
+  private readonly USER_KEY = 'onedrly_user';
+
+  private token: string | null = null;
   private currentUserSubject = new BehaviorSubject<User | null>(null);
   public currentUser$ = this.currentUserSubject.asObservable();
 
-  constructor() {
-    // Check for existing session on service initialization
-    this.checkExistingSession();
-  }
-
-  private checkExistingSession(): void {
-    const savedUser = localStorage.getItem('wandrly_user');
-    if (savedUser) {
-      try {
-        const user = JSON.parse(savedUser);
-        this.currentUserSubject.next(user);
-      } catch (error) {
-        localStorage.removeItem('wandrly_user');
-      }
-    }
+  constructor(private http: HttpClient) {
+    this.restoreSession();
   }
 
   register(credentials: RegisterCredentials): Observable<{ success: boolean; message: string }> {
-    return new Observable(observer => {
-      // Simulate API call delay
-      setTimeout(() => {
-        // Validate input
-        if (!credentials.name || !credentials.email || !credentials.password) {
-          observer.next({ success: false, message: 'All fields are required' });
-          observer.complete();
-          return;
+    const validationError = this.validateRegistration(credentials);
+    if (validationError) {
+      return of({ success: false, message: validationError });
+    }
+
+    const { firstName, lastName } = this.splitName(credentials.name);
+
+    return this.http.post<ApiResponse<AuthPayload>>(`${this.AUTH_API}/register`, {
+      email: credentials.email.trim(),
+      password: credentials.password,
+      firstName,
+      lastName
+    }).pipe(
+      tap(response => {
+        if (response.success && response.data) {
+          this.persistSession(response.data.user, response.data.token);
         }
-
-        if (credentials.password !== credentials.confirmPassword) {
-          observer.next({ success: false, message: 'Passwords do not match' });
-          observer.complete();
-          return;
-        }
-
-        if (credentials.password.length < 6) {
-          observer.next({ success: false, message: 'Password must be at least 6 characters' });
-          observer.complete();
-          return;
-        }
-
-        // Check if user already exists
-        const existingUsers = this.getStoredUsers();
-        const userExists = existingUsers.find(user => user.email === credentials.email);
-        
-        if (userExists) {
-          observer.next({ success: false, message: 'User with this email already exists' });
-          observer.complete();
-          return;
-        }
-
-        // Create new user
-        const newUser: User = {
-          id: this.generateId(),
-          name: credentials.name,
-          email: credentials.email,
-          preferences: {
-            favoriteDestinations: [],
-            preferredCategories: []
-          }
-        };
-
-        // Save user
-        existingUsers.push(newUser);
-        localStorage.setItem('wandrly_users', JSON.stringify(existingUsers));
-        localStorage.setItem('wandrly_user', JSON.stringify(newUser));
-        
-        this.currentUserSubject.next(newUser);
-        observer.next({ success: true, message: 'Registration successful!' });
-        observer.complete();
-      }, 1000);
-    });
+      }),
+      map(response => ({
+        success: response.success,
+        message: response.message || 'Registration successful!'
+      })),
+      catchError(error => of({
+        success: false,
+        message: this.extractErrorMessage(error)
+      }))
+    );
   }
 
   login(credentials: LoginCredentials): Observable<{ success: boolean; message: string }> {
-    return new Observable(observer => {
-      // Simulate API call delay
-      setTimeout(() => {
-        const users = this.getStoredUsers();
-        const user = users.find(u => u.email === credentials.email);
-        
-        if (!user) {
-          observer.next({ success: false, message: 'User not found' });
-          observer.complete();
-          return;
-        }
+    if (!credentials.email || !credentials.password) {
+      return of({ success: false, message: 'Email and password are required' });
+    }
 
-        // In a real app, you'd verify the password hash
-        // For demo purposes, we'll just check if password is not empty
-        if (!credentials.password) {
-          observer.next({ success: false, message: 'Invalid password' });
-          observer.complete();
-          return;
+    return this.http.post<ApiResponse<AuthPayload>>(`${this.AUTH_API}/login`, {
+      email: credentials.email.trim(),
+      password: credentials.password
+    }).pipe(
+      tap(response => {
+        if (response.success && response.data) {
+          this.persistSession(response.data.user, response.data.token);
         }
+      }),
+      map(response => ({
+        success: response.success,
+        message: response.message || 'Login successful!'
+      })),
+      catchError(error => of({
+        success: false,
+        message: this.extractErrorMessage(error)
+      }))
+    );
+  }
 
-        // Save current session
-        localStorage.setItem('wandrly_user', JSON.stringify(user));
-        this.currentUserSubject.next(user);
-        
-        observer.next({ success: true, message: 'Login successful!' });
-        observer.complete();
-      }, 1000);
-    });
+  refreshUserProfile(): Observable<User | null> {
+    if (!this.token) {
+      return of(null);
+    }
+
+    return this.http.get<ApiResponse<{ user: BackendUser }>>(`${this.AUTH_API}/me`).pipe(
+      map(response => {
+        if (response.success && response.data?.user) {
+          const mappedUser = this.mapUser(response.data.user);
+          this.saveUser(mappedUser);
+          this.currentUserSubject.next(mappedUser);
+          return mappedUser;
+        }
+        return null;
+      }),
+      catchError(() => {
+        this.logout();
+        return of(null);
+      })
+    );
+  }
+
+  updateProfile(profileUpdates: Partial<UserProfileDetails>): Observable<User | null> {
+    return this.http.put<ApiResponse<{ user: BackendUser }>>(
+      `${this.USER_API}/profile`,
+      profileUpdates
+    ).pipe(
+      map(response => {
+        if (response.success && response.data?.user) {
+          const user = this.mapUser(response.data.user);
+          this.saveUser(user);
+          this.currentUserSubject.next(user);
+          return user;
+        }
+        return this.currentUserSubject.value;
+      })
+    );
+  }
+
+  updatePreferences(preferences: Partial<UserPreferences>): Observable<User | null> {
+    return this.http.put<ApiResponse<{ preferences: UserPreferences }>>(
+      `${this.USER_API}/preferences`,
+      preferences
+    ).pipe(
+      map(response => {
+        const current = this.currentUserSubject.value;
+        if (response.success && response.data?.preferences && current) {
+          const updated = {
+            ...current,
+            preferences: {
+              ...current.preferences,
+              ...response.data.preferences
+            }
+          };
+          this.saveUser(updated);
+          this.currentUserSubject.next(updated);
+          return updated;
+        }
+        return current;
+      })
+    );
   }
 
   logout(): void {
-    localStorage.removeItem('wandrly_user');
+    this.token = null;
+    localStorage.removeItem(this.TOKEN_KEY);
+    localStorage.removeItem(this.USER_KEY);
     this.currentUserSubject.next(null);
   }
 
@@ -144,41 +190,137 @@ export class AuthService {
   }
 
   isLoggedIn(): boolean {
-    return this.currentUserSubject.value !== null;
+    return !!this.token;
   }
 
-  updateUserPreferences(preferences: Partial<User['preferences']>): void {
-    const currentUser = this.getCurrentUser();
-    if (currentUser) {
-      const updatedUser: User = {
-        ...currentUser,
-        preferences: { 
-          favoriteDestinations: preferences.favoriteDestinations || currentUser.preferences.favoriteDestinations,
-          preferredCategories: preferences.preferredCategories || currentUser.preferences.preferredCategories
-        }
-      };
-      
-      // Update stored user
-      localStorage.setItem('wandrly_user', JSON.stringify(updatedUser));
-      
-      // Update in users list
-      const users = this.getStoredUsers();
-      const userIndex = users.findIndex(u => u.id === currentUser.id);
-      if (userIndex !== -1) {
-        users[userIndex] = updatedUser;
-        localStorage.setItem('wandrly_users', JSON.stringify(users));
+  getToken(): string | null {
+    return this.token;
+  }
+
+  private restoreSession(): void {
+    const storedToken = localStorage.getItem(this.TOKEN_KEY);
+    const storedUser = localStorage.getItem(this.USER_KEY);
+
+    if (storedToken) {
+      this.token = storedToken;
+    }
+
+    if (storedUser) {
+      try {
+        const parsedUser: User = JSON.parse(storedUser);
+        this.currentUserSubject.next(parsedUser);
+      } catch {
+        localStorage.removeItem(this.USER_KEY);
       }
-      
-      this.currentUserSubject.next(updatedUser);
+    }
+
+    if (storedToken) {
+      this.refreshUserProfile().subscribe();
     }
   }
 
-  private getStoredUsers(): User[] {
-    const stored = localStorage.getItem('wandrly_users');
-    return stored ? JSON.parse(stored) : [];
+  private persistSession(user: BackendUser, token: string): void {
+    this.token = token;
+    localStorage.setItem(this.TOKEN_KEY, token);
+
+    const mappedUser = this.mapUser(user);
+    this.saveUser(mappedUser);
+    this.currentUserSubject.next(mappedUser);
   }
 
-  private generateId(): string {
-    return 'user_' + Math.random().toString(36).substr(2, 9);
+  private saveUser(user: User): void {
+    localStorage.setItem(this.USER_KEY, JSON.stringify(user));
+  }
+
+  private mapUser(user: BackendUser): User {
+    const profile: UserProfileDetails = {
+      firstName: user.profile?.firstName || '',
+      lastName: user.profile?.lastName || '',
+      phoneNumber: user.profile?.phoneNumber || '',
+      dateOfBirth: user.profile?.dateOfBirth,
+      gender: user.profile?.gender,
+      bio: user.profile?.bio,
+      nationality: user.profile?.nationality,
+      passportNumber: user.profile?.passportNumber,
+      profilePicture: user.profile?.profilePicture
+    };
+
+    const defaultPreferences: UserPreferences = {
+      currency: 'USD',
+      language: 'en',
+      notifications: {
+        email: true,
+        sms: false,
+        push: true
+      },
+      travelPreferences: {
+        seatPreference: 'no-preference',
+        mealPreference: 'no-preference',
+        accommodationType: 'no-preference'
+      }
+    };
+
+    const preferences: UserPreferences = {
+      ...defaultPreferences,
+      ...user.preferences,
+      notifications: {
+        ...defaultPreferences.notifications,
+        ...user.preferences?.notifications
+      },
+      travelPreferences: {
+        ...defaultPreferences.travelPreferences,
+        ...user.preferences?.travelPreferences
+      }
+    };
+
+    return {
+      id: user._id || user.id || '',
+      email: user.email,
+      name: user.name || this.buildFullName(profile) || user.email.split('@')[0],
+      profile,
+      preferences
+    };
+  }
+
+  private buildFullName(profile: UserProfileDetails): string {
+    const parts = [profile.firstName, profile.lastName].filter(Boolean);
+    return parts.join(' ').trim();
+  }
+
+  private validateRegistration(credentials: RegisterCredentials): string | null {
+    if (!credentials.name.trim() || !credentials.email.trim() || !credentials.password.trim()) {
+      return 'All fields are required';
+    }
+
+    if (credentials.password !== credentials.confirmPassword) {
+      return 'Passwords do not match';
+    }
+
+    if (credentials.password.length < 6) {
+      return 'Password must be at least 6 characters';
+    }
+
+    return null;
+  }
+
+  private splitName(name: string): { firstName: string; lastName: string } {
+    const [firstName, ...rest] = name.trim().split(' ');
+    return {
+      firstName,
+      lastName: rest.join(' ')
+    };
+  }
+
+  private extractErrorMessage(error: any): string {
+    if (error?.status === 0) {
+      return 'Unable to reach the Onedrly API. Make sure the backend server is running and MongoDB is connected.';
+    }
+    if (error?.error?.message) {
+      return error.error.message;
+    }
+    if (typeof error?.message === 'string') {
+      return error.message;
+    }
+    return 'Something went wrong. Please try again.';
   }
 }

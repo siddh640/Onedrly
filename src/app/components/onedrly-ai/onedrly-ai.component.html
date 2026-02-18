@@ -1,0 +1,141 @@
+<section class="ai-shell">
+  <header class="ai-hero">
+    <div>
+      <p class="eyebrow">Onedrly AI</p>
+      <h1>Travel intelligence on demand</h1>
+      <p>Think of me as your strategist, foodie friend, safety guide and budget coach all at once.</p>
+    </div>
+    <div class="hero-actions">
+      <button class="primary" (click)="buildItinerary()">✨ Create itinerary</button>
+      <button class="secondary" (click)="requestBudget()">💰 Estimate budget</button>
+      <button class="secondary" (click)="requestPackingList()">🎒 Packing list</button>
+    </div>
+  </header>
+
+  <div class="ai-grid">
+    <div class="chat-panel">
+      <header class="chat-header">
+        <div>
+          <h2>Onedrly AI Concierge</h2>
+          <small>Ask anything — from plan to packing list</small>
+        </div>
+        <div class="chat-actions">
+          <button (click)="clearChat()">Clear</button>
+          <button (click)="exportChat()">Export</button>
+        </div>
+      </header>
+
+      <div class="chat-body" #chatContainer>
+        @for (message of chatHistory(); track message.id) {
+          <article class="chat-bubble" [class.user]="message.role === 'user'">
+            <header>
+              <span>{{ message.role === 'user' ? 'You' : 'Onedrly AI' }}</span>
+              <time>{{ formatTime(message.timestamp) }}</time>
+            </header>
+            <p class="message" [innerText]="message.content"></p>
+            @if (message.metadata?.suggestions?.length) {
+              <div class="suggestion-tags">
+                @for (tip of message.metadata?.suggestions || []; track tip) {
+                  <button (click)="useSuggestedQuestion(tip)">{{ tip }}</button>
+                }
+              </div>
+            }
+            @if (message.role === 'assistant') {
+              <footer class="bubble-footer">
+                <button (click)="copyMessage(message.content)">Copy</button>
+                <button (click)="rateMessage(message, 'positive')">👍</button>
+                <button (click)="rateMessage(message, 'negative')">👎</button>
+              </footer>
+            }
+          </article>
+        }
+      </div>
+
+      <form class="chat-input" (submit)="$event.preventDefault(); sendMessage();">
+        @if (showQuickActions()) {
+          <div class="quick-actions">
+            @for (action of quickActions; track action.label) {
+              <button type="button" (click)="sendQuickAction(action.query)">{{ action.label }}</button>
+            }
+          </div>
+        }
+        <div class="input-row">
+          <textarea
+            #messageInput
+            [ngModel]="userMessage()"
+            (ngModelChange)="userMessage.set($event)"
+            placeholder="Ask anything... (Enter to send, Shift+Enter for new line)"
+            name="message"
+            (keydown)="onKeyDown($event)"
+          ></textarea>
+          <button type="submit" class="send" [disabled]="isLoading()">Send</button>
+        </div>
+      </form>
+    </div>
+
+    <aside class="context-panel" [class.collapsed]="isPanelCollapsed()">
+      <header (click)="togglePanel()">
+        <div>
+          <p class="eyebrow">Context</p>
+          <h3>Guide Onedrly AI</h3>
+        </div>
+        <button>{{ isPanelCollapsed() ? 'Expand' : 'Collapse' }}</button>
+      </header>
+
+      @if (!isPanelCollapsed()) {
+        <div class="panel-body">
+          <label>
+            <span>Destination focus</span>
+            <input type="text" [ngModel]="destination()" (ngModelChange)="destination.set($event)" placeholder="e.g. Goa, Manali">
+          </label>
+
+          <div class="date-grid">
+            <label>
+              <span>From</span>
+              <input type="date" [ngModel]="travelDates().start" (ngModelChange)="updateStartDate($event)">
+            </label>
+            <label>
+              <span>To</span>
+              <input type="date" [ngModel]="travelDates().end" (ngModelChange)="updateEndDate($event)">
+            </label>
+          </div>
+
+          <label>
+            <span>Travelers</span>
+            <input type="number" min="1" [ngModel]="travelers()" (ngModelChange)="travelers.set($event)">
+          </label>
+
+          <label>
+            <span>Budget</span>
+            <input type="text" [ngModel]="budget()" (ngModelChange)="budget.set($event)" placeholder="e.g. ₹60k for 4 days">
+          </label>
+
+          <section>
+            <span>Interests</span>
+            <div class="interest-grid">
+              @for (interest of availableInterests; track interest) {
+                <button type="button"
+                        [class.active]="interests().includes(interest)"
+                        (click)="toggleInterest(interest)">
+                  {{ interest }}
+                </button>
+              }
+            </div>
+          </section>
+
+          <section>
+            <span>Smart suggestions</span>
+            <div class="suggested-questions">
+              @for (question of suggestedQuestions(); track question) {
+                <button type="button" (click)="useSuggestedQuestion(question)">
+                  {{ question }}
+                </button>
+              }
+            </div>
+          </section>
+        </div>
+      }
+    </aside>
+  </div>
+</section>
+

@@ -1,65 +1,110 @@
 <div class="auth-container">
-  <div class="auth-card">
+  <div class="auth-card animate-fadeInUp hover-lift">
+    <!-- Enhanced Header -->
     <div class="auth-header">
-      <button class="back-btn" (click)="goBack()">
-        ← Back to O∩edrly
-      </button>
-      <h1 class="auth-title">Welcome Back!</h1>
-      <p class="auth-subtitle">Sign in to your O∩edrly account</p>
+      <h1 class="auth-title">Welcome Back</h1>
+      <p class="auth-subtitle">Sign in to continue your journey</p>
     </div>
 
+    <!-- Form -->
     <form (ngSubmit)="onSubmit()" class="auth-form">
       <div class="form-group">
-        <label for="email" class="form-label">Email Address</label>
-        <input
-          type="email"
-          id="email"
-          name="email"
-          [(ngModel)]="credentials.email"
-          class="form-input"
-          placeholder="Enter your email"
-          required
-        />
+        <label for="email" class="form-label">Email</label>
+        <div class="form-input-wrapper">
+          <svg class="form-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 8l7.89 5.26a2 2 0 002.22 0L21 8M5 19h14a2 2 0 002-2V7a2 2 0 00-2-2H5a2 2 0 00-2 2v10a2 2 0 002 2z" />
+          </svg>
+          <input
+            type="email"
+            id="email"
+            name="email"
+            [(ngModel)]="credentials.email"
+            class="form-input"
+            placeholder="your@email.com"
+            required
+          />
+        </div>
       </div>
 
       <div class="form-group">
         <label for="password" class="form-label">Password</label>
-        <input
-          type="password"
-          id="password"
-          name="password"
-          [(ngModel)]="credentials.password"
-          class="form-input"
-          placeholder="Enter your password"
-          required
-        />
+        <div class="form-input-wrapper">
+          <svg class="form-icon" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 15v2m-6 4h12a2 2 0 002-2v-6a2 2 0 00-2-2H6a2 2 0 00-2 2v6a2 2 0 002 2zm10-10V7a4 4 0 00-8 0v4h8z" />
+          </svg>
+          <input
+            [type]="showPassword ? 'text' : 'password'"
+            id="password"
+            name="password"
+            [(ngModel)]="credentials.password"
+            class="form-input"
+            placeholder="••••••••"
+            required
+          />
+          <button
+            type="button"
+            class="password-toggle"
+            (click)="showPassword = !showPassword"
+          >
+            @if (showPassword) {
+              <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13.875 18.825A10.05 10.05 0 0112 19c-4.478 0-8.268-2.943-9.543-7a9.97 9.97 0 011.563-3.029m5.858.908a3 3 0 114.243 4.243M9.878 9.878l4.242 4.242M9.88 9.88l-3.29-3.29m7.532 7.532l3.29 3.29M3 3l3.59 3.59m0 0A9.953 9.953 0 0112 5c4.478 0 8.268 2.943 9.543 7a10.025 10.025 0 01-4.132 5.411m0 0L21 21" />
+              </svg>
+            } @else {
+              <svg width="20" height="20" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M2.458 12C3.732 7.943 7.523 5 12 5c4.478 0 8.268 2.943 9.542 7-1.274 4.057-5.064 7-9.542 7-4.477 0-8.268-2.943-9.542-7z" />
+              </svg>
+            }
+          </button>
+        </div>
+      </div>
+
+      <div class="form-options">
+        <label class="remember-me">
+          <input type="checkbox" />
+          <span>Remember me</span>
+        </label>
+        <button type="button" class="forgot-password">Forgot password?</button>
       </div>
 
       @if (errorMessage) {
-      <div class="error-message">
-        {{ errorMessage }}
-      </div>
+        <div class="error-message">
+          {{ errorMessage }}
+        </div>
       }
 
       <button 
         type="submit" 
-        class="auth-button"
-        [disabled]="loading"
-        [class.loading]="loading">
+        class="auth-button glow-effect"
+        [disabled]="loading">
         @if (!loading) {
-        <span>Sign In</span>
-        }
-        @if (loading) {
-        <span>Signing In...</span>
+          Sign In
+        } @else {
+          Signing In...
         }
       </button>
     </form>
 
+    <!-- Divider -->
+    <div class="auth-divider">
+      <div class="divider-line"></div>
+      <span class="divider-text">or</span>
+      <div class="divider-line"></div>
+    </div>
+
+    <!-- Enhanced Social Login -->
+    <div class="social-login">
+      <button type="button" class="social-button">Google</button>
+      <button type="button" class="social-button">Facebook</button>
+    </div>
+
+    <!-- Sign Up Link -->
     <div class="auth-footer">
-      <p class="auth-text">
+      <p class="auth-footer-text">
         Don't have an account? 
-        <button class="link-button" (click)="goToRegister()">
-          Create Account
+        <button class="auth-link" (click)="goToRegister()">
+          Sign up
         </button>
       </p>
     </div>

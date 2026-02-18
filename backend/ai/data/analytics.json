@@ -1,0 +1,34 @@
+{
+  "totalQuestions": 5,
+  "categories": {
+    "general": 2,
+    "weather": 1,
+    "planning": 1,
+    "budget": 1
+  },
+  "keywords": {
+    "20251115": 1,
+    "delhi": 4,
+    "weather": 1,
+    "shimla": 1,
+    "right": 1,
+    "create": 2,
+    "4day": 1,
+    "immersive": 1,
+    "itinerary": 1,
+    "estimate": 1,
+    "budget": 1,
+    "travelers": 1,
+    "visiting": 1,
+    "packing": 1,
+    "list": 1
+  },
+  "topics": {
+    "2025-11-14": {
+      "general": 2,
+      "weather": 1,
+      "planning": 1,
+      "budget": 1
+    }
+  }
+}

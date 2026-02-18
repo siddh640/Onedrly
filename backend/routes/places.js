@@ -65,7 +65,7 @@ router.get('/search/:destination', async (req, res) => {
     // Cache the results
     cache.set(cacheKey, placesData, 600); // Cache for 10 minutes
 
-    console.log(`✅ Returning ${placesData.attractions.length} attractions, ${placesData.restaurants.length} restaurants, ${placesData.shopping.length} shopping`);
+    console.log(`✅ Returning ${placesData.attractions.length} attractions, ${placesData.restaurants.length} restaurants, ${placesData.shopping.length} shopping, ${placesData.medical?.length || 0} medical facilities`);
 
     res.json({
       success: true,
@@ -117,6 +117,13 @@ function getInstantPlacesData(destination) {
     'https://images.unsplash.com/photo-1556742393-d75f468bfcb0?w=800',
     'https://images.unsplash.com/photo-1567401893414-76b7b1e5a7a5?w=800'
   ];
+  
+  const medicalImages = [
+    'https://images.unsplash.com/photo-1576091160399-112ba8d25d1f?w=800',
+    'https://images.unsplash.com/photo-1519494026892-80bbd2d6fd0d?w=800',
+    'https://images.unsplash.com/photo-1551601651-2a8555f1a136?w=800',
+    'https://images.unsplash.com/photo-1571019613454-1cb2f99b2d8b?w=800'
+  ];
 
   const attractions = [
     { name: `${destination} Fort`, type: 'Historical Monument', icon: '🏰', price: 2 },
@@ -151,6 +158,17 @@ function getInstantPlacesData(destination) {
     { name: `${destination} Souvenir Shop`, type: 'Souvenirs', icon: '🎁', price: 2 }
   ];
 
+  const medical = [
+    { name: `Apollo Hospital ${destination}`, type: 'Hospital', icon: '🏥', price: 4 },
+    { name: `Fortis Healthcare ${destination}`, type: 'Hospital', icon: '🏥', price: 4 },
+    { name: `City Clinic ${destination}`, type: 'Clinic', icon: '🏥', price: 2 },
+    { name: `Apollo Pharmacy ${destination}`, type: 'Pharmacy', icon: '💊', price: 2 },
+    { name: `Wellness Forever ${destination}`, type: 'Pharmacy', icon: '💊', price: 2 },
+    { name: `Dental Care Center`, type: 'Dentist', icon: '🦷', price: 3 },
+    { name: `Eye Care Center ${destination}`, type: 'Clinic', icon: '👁️', price: 3 },
+    { name: `Health Care Clinic`, type: 'Clinic', icon: '🏥', price: 2 }
+  ];
+
   // Generate places instantly (no async!)
   const generatePlaces = (items, category, images) => {
     return items.map((item, index) => ({
@@ -183,6 +201,7 @@ function getInstantPlacesData(destination) {
     attractions: generatePlaces(attractions, 'attraction', attractionImages),
     restaurants: generatePlaces(restaurants, 'restaurant', restaurantImages),
     shopping: generatePlaces(shopping, 'shopping', shoppingImages),
+    medical: generatePlaces(medical, 'medical', medicalImages),
     source: 'instant_mock'
   };
 }

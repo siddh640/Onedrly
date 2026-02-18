@@ -2,7 +2,7 @@
   <div class="profile-card">
     <div class="profile-header">
       <button class="back-btn" (click)="goBack()">
-        ← Back to O∩edrly
+        ← Back to Onedrly
       </button>
       <h1 class="profile-title">My Profile</h1>
     </div>
@@ -16,6 +16,9 @@
         <div class="user-details">
           <h2 class="user-name">{{ user.name }}</h2>
           <p class="user-email">{{ user.email }}</p>
+          @if (stats?.memberSince) {
+            <p class="user-meta">Member since {{ stats?.memberSince | date }}</p>
+          }
         </div>
       </div>
 
@@ -23,17 +26,125 @@
         <div class="stat-card">
           <div class="stat-icon">🏛️</div>
           <div class="stat-info">
-            <h3>{{ user.preferences.favoriteDestinations.length }}</h3>
-            <p>Favorite Destinations</p>
+            <h3>{{ stats?.totalBookings || 0 }}</h3>
+            <p>Total Bookings</p>
           </div>
         </div>
         <div class="stat-card">
           <div class="stat-icon">⭐</div>
           <div class="stat-info">
-            <h3>{{ user.preferences.preferredCategories.length }}</h3>
-            <p>Preferred Categories</p>
+            <h3>{{ stats?.totalTrips || 0 }}</h3>
+            <p>Trips Planned</p>
           </div>
         </div>
+        <div class="stat-card">
+          <div class="stat-icon">❤️</div>
+          <div class="stat-info">
+            <h3>{{ stats?.totalFavorites || 0 }}</h3>
+            <p>Favorites Saved</p>
+          </div>
+        </div>
+        <div class="stat-card">
+          <div class="stat-icon">🔍</div>
+          <div class="stat-info">
+            <h3>{{ stats?.totalSearches || 0 }}</h3>
+            <p>Searches Logged</p>
+          </div>
+        </div>
+      </div>
+
+      <div class="preferences-card">
+        <h3>Preferences</h3>
+        <div class="preferences-grid">
+          <div>
+            <span class="label">Currency</span>
+            <span class="value">{{ user.preferences.currency }}</span>
+          </div>
+          <div>
+            <span class="label">Language</span>
+            <span class="value">{{ user.preferences.language | uppercase }}</span>
+          </div>
+          <div>
+            <span class="label">Seat Preference</span>
+            <span class="value">{{ user.preferences.travelPreferences.seatPreference | titlecase }}</span>
+          </div>
+          <div>
+            <span class="label">Meal Preference</span>
+            <span class="value">{{ user.preferences.travelPreferences.mealPreference | titlecase }}</span>
+          </div>
+          <div>
+            <span class="label">Stay Preference</span>
+            <span class="value">{{ user.preferences.travelPreferences.accommodationType | titlecase }}</span>
+          </div>
+        </div>
+      </div>
+
+      @if (recentBookings.length) {
+        <div class="recent-bookings">
+          <h3>Recent Bookings</h3>
+          <div class="booking-list">
+            @for (booking of recentBookings; track booking._id) {
+              <div class="booking-item">
+                <div>
+                  <p class="booking-type">{{ booking.bookingType | titlecase }}</p>
+                  <p class="booking-destination">
+                    {{ booking.tripDetails?.destination?.name || 'Destination TBD' }}
+                  </p>
+                </div>
+                <div class="booking-meta">
+                  <span class="booking-status">{{ booking.bookingStatus | titlecase }}</span>
+                  <span class="booking-amount">
+                    {{ booking.pricing?.currency || 'USD' }} {{ booking.pricing?.totalAmount || 0 }}
+                  </span>
+                </div>
+              </div>
+            }
+          </div>
+        </div>
+      }
+
+      <div class="favorites-card">
+        <h3>Saved Favorites</h3>
+        @if (savedFavorites.length) {
+          <div class="favorite-list">
+            @for (favorite of savedFavorites; track favorite._id) {
+              <div class="favorite-item">
+                <div>
+                  <p class="favorite-name">{{ favorite.itemDetails.name }}</p>
+                  <p class="favorite-meta">
+                    {{ favorite.favoriteType | titlecase }} · {{ favorite.itemDetails.location?.city || 'Unknown city' }}
+                  </p>
+                </div>
+                <div class="favorite-status">
+                  <span class="favorite-date">{{ favorite.savedAt | date:'MMM d, y' }}</span>
+                </div>
+              </div>
+            }
+          </div>
+        } @else {
+          <p class="empty-text">Save attractions, restaurants, or shops to see them here.</p>
+        }
+      </div>
+
+      <div class="search-history-card">
+        <h3>Recent Searches</h3>
+        @if (recentSearches.length) {
+          <div class="search-history-list">
+            @for (search of recentSearches; track search._id) {
+              <div class="search-history-item">
+                <div>
+                  <p class="search-destination">
+                    {{ search.searchParams?.destination?.name || search.searchParams?.query || 'Unknown destination' }}
+                  </p>
+                  <p class="search-type">{{ search.searchType | titlecase }}</p>
+                </div>
+                <span class="search-date">{{ search.searchedAt | date:'MMM d' }}</span>
+              </div>
+            }
+          </div>
+        } @else {
+          <p class="empty-text">Your recent searches will appear here once you explore destinations.</p>
+        }
       </div>
 
       <div class="profile-actions">

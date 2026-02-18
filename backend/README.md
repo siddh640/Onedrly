@@ -1,6 +1,6 @@
-# 🚀 Wandrly Backend API
+# 🚀 Onedrly Backend API
 
-> Unified backend API for the Wandrly travel platform
+> Unified backend API for the Onedrly travel platform
 
 ## Features
 

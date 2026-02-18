@@ -1,5 +1,5 @@
 {
-  "name": "wandrly-backend-api",
+  "name": "onedrly-backend-api",
   "version": "1.0.0",
   "description": "Onedrly Backend API - Unified travel and destination data service",
   "main": "server.js",
@@ -11,7 +11,7 @@
   "keywords": [
     "travel",
     "api",
-    "wandrly",
+    "onedrly",
     "flights",
     "hotels",
     "weather"
@@ -27,7 +27,12 @@
     "compression": "^1.7.4",
     "express-rate-limit": "^7.1.5",
     "node-cache": "^5.1.2",
-    "morgan": "^1.10.0"
+    "morgan": "^1.10.0",
+    "openai": "^4.20.1",
+    "mongoose": "^8.0.3",
+    "bcryptjs": "^2.4.3",
+    "jsonwebtoken": "^9.0.2",
+    "express-validator": "^7.0.1"
   },
   "devDependencies": {
     "nodemon": "^3.0.2"
